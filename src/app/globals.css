@@ -8,6 +8,8 @@
   --faint: rgba(237, 242, 240, 0.32);
   --hairline: rgba(255, 255, 255, 0.09);
   --hairline-strong: rgba(255, 255, 255, 0.16);
+  --glass: rgba(255, 255, 255, 0.028);
+  --rail-w: 216px;
   --ease: cubic-bezier(0.22, 0.61, 0.2, 1);
 }
 
