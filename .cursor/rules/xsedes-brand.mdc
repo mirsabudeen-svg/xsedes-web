@@ -1,0 +1,36 @@
+---
+description: XSEDES brand system — applies to every file in this repo
+alwaysApply: true
+---
+
+XSEDES is an Experiential Technology Partner for the events, exhibitions,
+entertainment and live experiences industry. It PARTNERS with event
+agencies and NEVER competes with them. Never describe XSEDES as an event
+management company or organiser.
+
+Facts that must never drift:
+- Tagline: "Engineering Extraordinary Event Experiences"
+- Operating model, in order: Discover → X-Consult → X-Lab → X-Build → X-Ops
+  (four divisions, hyphenated names; Discover is the entry stage)
+- Five ventures: PhotoShap, VELOS, KONSTRUKT, Bobb's Kitchen, DEED
+- Never invent statistics, client counts, or deployment numbers
+
+Visual system:
+- Single accent #4EF2D3 on pure #000000; hairlines rgba(255,255,255,.09)
+- Barlow only; headings Barlow 800 uppercase; labels "§ 0N · LABEL"
+  mono-caps; no serif/italic accents in headings
+- 1px hairline borders and corner marks instead of shadows or cards
+- Motion: blur + opacity + slide-up, 0.9–1s, cubic-bezier(.22,.61,.2,1),
+  mechanical, never bouncy; always honor prefers-reduced-motion
+
+Voice: professional, engineering-led, collaborative, premium. No hype
+words (revolutionary, game-changing, world-class, cutting-edge).
+
+Engineering: TypeScript strict, no `any`; copy lives in src/content/*.ts
+only; canvas/animation code pauses on hidden tabs and cleans up on
+unmount; interactive elements are keyboard accessible.
+
+Agent code rules: agent behavior/prompts live in agents/skills/*.md — load
+them at runtime, never duplicate their text inside route handlers. Any
+agent that modifies the repo must do so via pull request, never direct
+pushes to main.

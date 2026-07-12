@@ -1,0 +1,62 @@
+# .github/workflows/qa-audit.yml
+# Agent 3: QA / Brand Auditor — runs on every pull request.
+# Free, no API keys needed. Builds the site and runs the brand linter,
+# then posts the result as a PR comment.
+
+name: QA & Brand Audit
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Brand lint
+        id: brandlint
+        run: |
+          set +e
+          node scripts/brand-lint.mjs > lint-output.txt 2>&1
+          echo "exitcode=$?" >> "$GITHUB_OUTPUT"
+          cat lint-output.txt
+
+      - name: Comment on PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let output = 'brand-lint did not run';
+            try { output = fs.readFileSync('lint-output.txt', 'utf8'); } catch {}
+            const failed = '${{ steps.brandlint.outputs.exitcode }}' !== '0';
+            const header = failed
+              ? '### 🔴 Brand Audit: FAIL — blockers found'
+              : '### 🟢 Brand Audit: PASS';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `${header}\n\n\`\`\`\n${output.slice(0, 6000)}\n\`\`\`\n\n_Automated by the XSEDES QA Auditor (agents/skills/brand-guardian.md)_`,
+            });
+
+      - name: Fail job on blockers
+        if: steps.brandlint.outputs.exitcode != '0'
+        run: exit 1
