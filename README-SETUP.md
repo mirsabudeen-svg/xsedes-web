@@ -1,67 +1,93 @@
 # XSEDES Smart Website Management System — Setup Guide
 
-You are hosting **three agents** plus **dev-time MCP tooling**. Total manual work: ~20 minutes, mostly pasting keys. Everything else is copy the folder → tell Cursor to integrate → push.
+You are hosting the **site + Concierge on Cloudflare Workers**, **four admin agents as GitHub Actions**, plus **dev-time MCP tooling**. Total manual work: ~20 minutes, mostly pasting keys.
 
 ## The system at a glance
 
 | Agent | Where it lives | What it does | Needs from you |
 |---|---|---|---|
-| **1. Site Concierge** (frontend + backend) | Chat widget on the website + `/api/concierge` route on Vercel | Answers visitor questions about XSEDES, divisions, ventures; captures partner leads. Strictly on-brand, never invents facts. | `ANTHROPIC_API_KEY` in Vercel |
-| **2. Content Manager** (backend) | `/api/content-agent` route (admin-only) | You type "update the VELOS one-liner to …" → agent edits the content files and **opens a GitHub PR** (never pushes directly). You just click Merge. | `GITHUB_TOKEN` + `ADMIN_SECRET` in Vercel |
-| **3. QA / Brand Auditor** (CI) | GitHub Actions, runs on every PR | Builds the site, lints for brand violations (off-brand colors, hype words, banned phrases, serif fonts), posts results on the PR. No API key needed — pure script. | Nothing — enable Actions |
-| **Dev agents** (Cursor MCPs) | Your Cursor editor | GitHub, Vercel, Playwright (visual testing), 21st.dev Magic (component gen) available as tools inside Cursor | Paste 2 tokens in `.cursor/mcp.json` |
+| **1. Site Concierge** (frontend + backend) | Chat widget + `/api/concierge` on Cloudflare Workers | Answers visitor questions about XSEDES, divisions, ventures; captures partner leads. Strictly on-brand, never invents facts. | `ANTHROPIC_API_KEY` Worker secret |
+| **2. Content Manager** | GitHub Action `Agent — Content Manager` | You type an instruction → agent edits `src/content/*` and **opens a PR** (never pushes to main). | `ANTHROPIC_API_KEY` repo secret |
+| **3. Blog Writer** | GitHub Action `Agent — Blog Writer` | Topic + brand → draft MDX (`draft: true`) as a PR. | same |
+| **4. SEO Optimizer** | GitHub Action `Agent — SEO Optimizer` | Audits a live path; writes findings to the workflow summary (no PR). | same + `SITE_URL` repo variable |
+| **5. Social Repurposer** | GitHub Action `Agent — Social Repurposer` | Published post → LinkedIn / Instagram / WhatsApp variants as a PR. Refuses drafts. | same |
+| **QA / Brand Auditor** | GitHub Actions on every PR | Builds the site, brand-lints, posts results. | Nothing — enable Actions |
+| **Dev agents** (Cursor MCPs) | Your Cursor editor | GitHub, Playwright, 21st.dev Magic, etc. | Tokens in `.cursor/mcp.json` |
 
-**Safety model (why you can trust it):** the only agent that changes anything (Content Manager) works through pull requests — you review and merge. The Concierge can only talk. The Auditor can only report. Nothing deploys itself.
+**Safety model:** admin agents only open pull requests (or report). You review and merge. The Concierge can only talk. Nothing deploys itself from an agent.
 
 ---
 
 ## Setup — do these once, in order
 
-### Step 1 — Copy the folder
-Copy everything in this folder into your `xsedes-web` repo root (same level as `package.json`), keeping the structure. Then open Cursor and paste **Prompt A** from `CURSOR-PROMPTS.md` — Cursor wires the pieces into your Next.js app.
+### Step 1 — Cloudflare (site + Concierge)
 
-### Step 2 — Get your two keys
-1. **Anthropic API key:** console.anthropic.com → API Keys → Create. (Concierge + Content Manager. Expect roughly $5–20/month at modest traffic; set a spend limit in the console.)
-2. **GitHub fine-grained token:** github.com → Settings → Developer settings → Fine-grained tokens → only your `xsedes-web` repo → Repository permissions: **Contents: Read & write, Pull requests: Read & write**. Nothing else.
+1. Install deps: `npm install`
+2. Log in: `npx wrangler login`
+3. Deploy: `npm run deploy`
+4. Set the Concierge secret:
+   ```
+   npx wrangler secret put ANTHROPIC_API_KEY
+   ```
+5. Set the public site URL as a Worker variable (Wrangler dashboard → Variables, or in `wrangler.jsonc` under `vars`):
+   ```
+   SITE_URL = https://your-worker.workers.dev
+   ```
+   (no trailing slash). Used by the SEO Action when fetching pages.
 
-### Step 3 — Add environment variables in Vercel
-Vercel → your project → Settings → Environment Variables:
-```
-ANTHROPIC_API_KEY = sk-ant-...
-GITHUB_TOKEN      = github_pat_...
-GITHUB_REPO       = your-username/xsedes-web
-ADMIN_SECRET      = (make up a long random string — this is your admin password)
-```
+Local check before deploy: `npm run preview` (builds with OpenNext and runs under `workerd`).
 
-### Step 4 — Enable the auditor
-Push to GitHub. Go to the repo → Actions tab → enable workflows. Done — every PR now gets an automatic brand + build audit.
+### Step 2 — GitHub (admin agents)
 
-### Step 5 — Wire Cursor's MCP tools
-Open `.cursor/mcp.json`, paste your GitHub token and (optional) 21st.dev Magic key where marked. Restart Cursor. You now have repo, deployment, browser-testing, and component-generation tools inside the editor.
+1. Repo → **Settings → Secrets and variables → Actions** → New repository secret:
+   - `ANTHROPIC_API_KEY` — same Anthropic key (or a separate one with a spend limit)
+2. Repo → **Settings → Variables → Actions** → New variable:
+   - `SITE_URL` — your deployed Cloudflare URL (same as above)
+3. Repo → **Settings → Actions → General** → **Workflow permissions**:
+   - Allow GitHub Actions to create and approve pull requests — **must be ticked**
+   - Read and write permissions (so agents can open PRs)
 
-### Step 6 — Test
-- Visit your deployed site → chat bubble bottom-right → ask "What does X-Build do?"
-- `curl -X POST https://yoursite.com/api/content-agent -H "Authorization: Bearer YOUR_ADMIN_SECRET" -H "Content-Type: application/json" -d '{"instruction":"Change the DEED one-liner to mention patent analytics"}'` → check GitHub for a new PR.
-- Open any PR → see the auditor comment.
+No fine-grained PAT is required for the admin agents: workflows use the built-in `secrets.GITHUB_TOKEN` with `contents: write` and `pull-requests: write`.
+
+### Step 3 — Enable the auditor
+
+Push to GitHub. Actions tab → enable workflows. Every PR gets an automatic brand + build audit.
+
+### Step 4 — Wire Cursor's MCP tools
+
+Open `.cursor/mcp.json`, paste your GitHub token and (optional) 21st.dev Magic key where marked. Restart Cursor.
+
+### Step 5 — Smoke test
+
+- Visit the deployed Workers URL → Concierge bubble → ask "What does X-Build do?"
+- Actions → **Agent — Content Manager** → Run workflow → instruction e.g. `Change the DEED one-liner to mention patent analytics` → check for a new PR
+- Open any PR → see the auditor comment
 
 ---
 
-## Daily workflow after setup (this is the "minimal manual" part)
+## Daily workflow (admin agents)
 
-- **Change website content:** message the Content Manager (or use the admin page from Prompt D) → review the PR it opens → click Merge → Vercel auto-deploys. You never open a code file.
-- **Build new sections/components:** use the section prompts + Magic MCP in Cursor.
-- **Quality:** automatic on every PR. If the auditor flags something, paste its comment into Cursor and say "fix these".
-- **Visitor questions:** handled 24/7 by the Concierge; leads it captures are logged (see `route.ts` — extend to email/WhatsApp later).
+1. GitHub → **Actions** tab  
+2. Select the agent workflow (Content / Blog / SEO / Social)  
+3. **Run workflow** → fill the form → Run  
+4. Review the PR (or the SEO job summary) → merge when ready → redeploy the site (`npm run deploy` or your CI)
+
+You never need to paste an admin password — auth is your GitHub login.
+
+---
 
 ## What each folder contains
-- `agents/skills/` — the "brains": one markdown skill per agent. Shared by runtime and Cursor so brand truth lives in ONE place. Edit these to change agent behavior — no code needed.
-- `src/app/api/` — the two backend agents (Vercel serverless routes).
-- `src/components/agent/` — the on-brand chat widget.
-- `scripts/brand-lint.mjs` + `.github/workflows/qa-audit.yml` — the auditor.
-- `.cursor/` — MCP connectors + the brand rule Cursor obeys in every generation.
-- `CURSOR-PROMPTS.md` — paste-ready prompts to integrate and extend all of this.
+
+- `agents/skills/` + `agents/brands/` — agent brains (source of truth). Edit these by hand; never edit `src/lib/agents/generated.ts` (built by `scripts/generate-skills.mjs` on predev/prebuild).
+- `src/app/api/concierge/` — Concierge Workers route.
+- `src/components/agent/` — on-brand chat widget.
+- `scripts/agents/` — Content / Blog / SEO / Social runners for Actions.
+- `scripts/brand-lint.mjs` + `.github/workflows/qa-audit.yml` — auditor.
+- `wrangler.jsonc` + `open-next.config.ts` — Cloudflare / OpenNext.
+- `.cursor/` — MCP connectors + brand rule.
 
 ## Honest limits
-- The Concierge answers only from the brand context we give it (`brand-context.ts`). Update that file (or let the Content Manager do it) when facts change.
-- Content Manager edits `src/content/*.ts` files only — by design. Widening its file access widens your risk.
-- Costs: Concierge ≈ $0.01–0.03 per conversation with Sonnet. The auditor is free. Set Anthropic spend limits.
+
+- Concierge answers only from skill + brand context. Update `agents/skills/site-concierge.md` (then redeploy) when facts change.
+- Content Manager edits under `src/content/` only — by design.
+- Costs: Concierge ≈ $0.01–0.03 per conversation with Sonnet. Actions agents cost only when you run them. Set Anthropic spend limits.

@@ -1,0 +1,45 @@
+name: Agent — Social Repurposer
+
+on:
+  workflow_dispatch:
+    inputs:
+      brand:
+        description: Brand overlay
+        required: true
+        type: choice
+        options:
+          - xsedes
+          - photoshap
+          - velos
+          - konstrukt
+          - bobbs-kitchen
+          - deed
+      slug:
+        description: Post filename without .mdx (e.g. 2026-07-12-my-post)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  social:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: node scripts/generate-skills.mjs
+      - name: Run social agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          AGENT_BRAND: ${{ inputs.brand }}
+          AGENT_SLUG: ${{ inputs.slug }}
+        run: node scripts/agents/social.mjs

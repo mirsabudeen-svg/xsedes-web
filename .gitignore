@@ -32,8 +32,16 @@ yarn-error.log*
 .env*
 !.env.example
 
-# vercel
+# vercel (legacy)
 .vercel
+
+# OpenNext / Cloudflare
+.open-next
+.wrangler
+
+# generated agent skill bundle (run scripts/generate-skills.mjs)
+src/lib/agents/generated.ts
+scripts/agents/generated-skills.mjs
 
 # typescript
 *.tsbuildinfo

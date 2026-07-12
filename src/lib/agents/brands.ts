@@ -1,10 +1,9 @@
 // src/lib/agents/brands.ts
 // Multi-brand registry. Every agent can operate as XSEDES (master) or
-// any sub-brand by composing: base skill + brand overlay from
-// agents/brands/{brand}.md. Add a new venture = add one markdown file.
+// any sub-brand by composing: base skill + brand overlay from the
+// generated bundle. Add a new venture = add one markdown file + regenerate.
 
-import { promises as fs } from "fs";
-import path from "path";
+import { BRAND_OVERLAYS } from "./generated";
 import { loadSkill, type ChatMessage } from "./anthropic";
 
 export const BRANDS = [
@@ -21,21 +20,12 @@ export function isBrand(x: string): x is Brand {
   return (BRANDS as readonly string[]).includes(x);
 }
 
-const brandCache = new Map<string, string>();
-
 export async function loadBrandOverlay(brand: Brand): Promise<string> {
-  const cached = brandCache.get(brand);
-  if (cached) return cached;
-  const filePath = path.join(process.cwd(), "agents", "brands", `${brand}.md`);
-  try {
-    const text = await fs.readFile(filePath, "utf8");
-    brandCache.set(brand, text);
-    return text;
-  } catch {
-    // Brand overlay not written yet — fall back to master with a notice
-    // so agents don't invent brand facts.
-    return `# Brand overlay missing for "${brand}"\nOperate as XSEDES master brand. Do not invent ${brand}-specific claims; describe it only as a venture incubated inside XSEDES.`;
-  }
+  const text = BRAND_OVERLAYS[brand as keyof typeof BRAND_OVERLAYS];
+  if (text) return text;
+  // Brand overlay not written yet — fall back to master with a notice
+  // so agents don't invent brand facts.
+  return `# Brand overlay missing for "${brand}"\nOperate as XSEDES master brand. Do not invent ${brand}-specific claims; describe it only as a venture incubated inside XSEDES.`;
 }
 
 /**
@@ -53,9 +43,6 @@ export async function runBrandAgent(opts: {
     loadSkill(opts.skill),
     loadBrandOverlay(opts.brand),
   ]);
-  // Compose via a one-off system: reuse runAgent's plumbing by passing a
-  // synthetic skill through messages is wrong — instead runAgent accepts
-  // a skill name; so we inline a tiny variant here.
   return runComposed(`${base}\n\n---\n\n# ACTIVE BRAND OVERLAY\n\n${overlay}`, opts);
 }
 

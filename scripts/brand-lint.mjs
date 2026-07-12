@@ -39,6 +39,9 @@ function report(sev, file, line, text, fix) {
 
 function check(file) {
   const rel = relative(ROOT, file).replace(/\\/g, "/");
+  // Generated skill/brand bundle embeds the guardian's own ban-lists — skip it.
+  if (rel === "src/lib/agents/generated.ts") return;
+
   const lines = readFileSync(file, "utf8").split("\n");
 
   lines.forEach((lineText, i) => {

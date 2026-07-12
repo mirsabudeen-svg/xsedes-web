@@ -1,24 +1,20 @@
 // src/lib/agents/anthropic.ts
-// Shared helper: loads agent skills from agents/skills/*.md and calls
+// Shared helper: loads agent skills from the generated bundle and calls
 // the Anthropic Messages API. Keep ALL agent behavior in the skill
 // files — this module is plumbing only.
 
-import { promises as fs } from "fs";
-import path from "path";
+import { SKILLS } from "./generated";
 
 const API_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-sonnet-4-6";
 
 export type ChatMessage = { role: "user" | "assistant"; content: string };
 
-const skillCache = new Map<string, string>();
-
 export async function loadSkill(name: string): Promise<string> {
-  const cached = skillCache.get(name);
-  if (cached) return cached;
-  const filePath = path.join(process.cwd(), "agents", "skills", `${name}.md`);
-  const text = await fs.readFile(filePath, "utf8");
-  skillCache.set(name, text);
+  const text = SKILLS[name as keyof typeof SKILLS];
+  if (!text) {
+    throw new Error(`Unknown skill "${name}" — run scripts/generate-skills.mjs`);
+  }
   return text;
 }
 

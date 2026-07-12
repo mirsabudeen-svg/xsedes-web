@@ -1,0 +1,44 @@
+name: Agent — SEO Optimizer
+
+on:
+  workflow_dispatch:
+    inputs:
+      brand:
+        description: Brand overlay
+        required: true
+        type: choice
+        options:
+          - xsedes
+          - photoshap
+          - velos
+          - konstrukt
+          - bobbs-kitchen
+          - deed
+        default: xsedes
+      path:
+        description: Site-relative path to audit
+        required: true
+        type: string
+        default: "/"
+
+permissions:
+  contents: read
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: node scripts/generate-skills.mjs
+      - name: Run SEO agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          AGENT_BRAND: ${{ inputs.brand }}
+          AGENT_PATH: ${{ inputs.path }}
+        run: node scripts/agents/seo.mjs

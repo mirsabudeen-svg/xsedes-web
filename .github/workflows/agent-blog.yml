@@ -1,0 +1,51 @@
+name: Agent — Blog Writer
+
+on:
+  workflow_dispatch:
+    inputs:
+      brand:
+        description: Brand overlay
+        required: true
+        type: choice
+        options:
+          - xsedes
+          - photoshap
+          - velos
+          - konstrukt
+          - bobbs-kitchen
+          - deed
+        default: xsedes
+      topic:
+        description: Blog topic
+        required: true
+        type: string
+      notes:
+        description: Optional owner notes
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  blog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: node scripts/generate-skills.mjs
+      - name: Run blog agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          AGENT_BRAND: ${{ inputs.brand }}
+          AGENT_TOPIC: ${{ inputs.topic }}
+          AGENT_NOTES: ${{ inputs.notes }}
+        run: node scripts/agents/blog.mjs

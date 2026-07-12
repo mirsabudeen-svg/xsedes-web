@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     });
 
     // Lightweight lead logging: if the exchange looks like a lead,
-    // surface it in Vercel logs. Extend to email/WhatsApp/CRM later.
+    // surface it in Workers logs. Extend to email/WhatsApp/CRM later.
     const lastUser = messages[messages.length - 1].content.toLowerCase();
     if (/@|\bphone\b|\bwhatsapp\b|\bcontact\b|\bpartner\b/.test(lastUser)) {
       console.log("[concierge:lead]", JSON.stringify(messages.slice(-4)));
