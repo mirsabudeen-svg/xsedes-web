@@ -3,6 +3,7 @@
 import { useEffect, type ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import GridField from "@/components/background/GridField"
+import AtmosphereField from "@/components/background/AtmosphereField"
 import ParticleField from "@/components/background/ParticleField"
 import BootGate from "@/components/entry/BootGate"
 import {
@@ -45,6 +46,7 @@ const MissionChrome = ({ children }: { children: ReactNode }) => {
     return (
       <>
         <SilentGateDismiss />
+        <AtmosphereField />
         <GridField />
         <SmoothScroll>
           <div className="relative z-[1]">{children}</div>
@@ -56,6 +58,7 @@ const MissionChrome = ({ children }: { children: ReactNode }) => {
   return (
     <>
       <MissionHomeBootstrap />
+      <AtmosphereField />
       <ParticleField />
       <GridField />
       <BootGate />

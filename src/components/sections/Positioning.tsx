@@ -3,6 +3,7 @@
 import { useCallback } from "react"
 import CornerMarks from "@/components/ui/CornerMarks"
 import Reveal from "@/components/ui/Reveal"
+import SectionBackdrop from "@/components/ui/SectionBackdrop"
 import SectionLabel from "@/components/ui/SectionLabel"
 import { useMissionProgress } from "@/components/providers/MissionProvider"
 import { positioning } from "@/content/site"
@@ -26,6 +27,7 @@ const Positioning = () => {
       id={POSITIONING_ID}
       className="relative border-b border-[var(--hairline)] px-[clamp(28px,7vw,110px)] py-[120px]"
     >
+      <SectionBackdrop mark="01" />
       <CornerMarks />
 
       <Reveal wipe>

@@ -3,7 +3,9 @@
 import { useCallback } from "react"
 import CornerMarks from "@/components/ui/CornerMarks"
 import Reveal from "@/components/ui/Reveal"
+import SectionBackdrop from "@/components/ui/SectionBackdrop"
 import SectionLabel from "@/components/ui/SectionLabel"
+import { stageIcons } from "@/components/icons/MissionIcons"
 import { useMissionProgress } from "@/components/providers/MissionProvider"
 import { useRegisterStage } from "@/hooks/useRegisterStage"
 import {
@@ -27,6 +29,7 @@ const StageSection = ({ division }: StageSectionProps) => {
 
   const stageCleared = clearedStages.has(division.stageKey)
   const sectionCleared = clearedSections.has(division.sectionId)
+  const StageIcon = stageIcons[division.stageKey]
 
   const sectionRef = useCallback(
     (el: HTMLElement | null) => {
@@ -46,6 +49,7 @@ const StageSection = ({ division }: StageSectionProps) => {
       id={division.sectionId}
       className="relative border-b border-[var(--hairline)] px-[clamp(28px,7vw,110px)] py-[120px]"
     >
+      <SectionBackdrop mark={`0${division.stageIndex}`} />
       <CornerMarks />
 
       <Reveal wipe>
@@ -56,9 +60,20 @@ const StageSection = ({ division }: StageSectionProps) => {
 
       <Reveal delay={1} wipe>
         <div className="flex flex-wrap items-baseline justify-between gap-6">
-          <h2 className="text-[clamp(30px,4.2vw,56px)] font-extrabold uppercase leading-[1.04] tracking-[0.015em]">
-            {division.name}
-          </h2>
+          <div className="flex flex-wrap items-center gap-5">
+            <span
+              className={`inline-flex h-12 w-12 shrink-0 items-center justify-center border transition-colors duration-[600ms] ease-[var(--ease)] ${
+                stageCleared
+                  ? "border-[rgba(78,242,211,0.45)] text-[var(--accent)]"
+                  : "border-[var(--hairline-strong)] text-[var(--faint)]"
+              }`}
+            >
+              <StageIcon size={22} />
+            </span>
+            <h2 className="text-[clamp(30px,4.2vw,56px)] font-extrabold uppercase leading-[1.04] tracking-[0.015em]">
+              {division.name}
+            </h2>
+          </div>
           <div
             className={`whitespace-nowrap border px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.24em] transition-[color,border-color] duration-[600ms] ease-[var(--ease)] ${
               stageCleared

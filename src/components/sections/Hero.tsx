@@ -3,6 +3,8 @@
 import { useCallback, type MouseEvent } from "react"
 import CornerMarks from "@/components/ui/CornerMarks"
 import Reveal from "@/components/ui/Reveal"
+import SectionBackdrop from "@/components/ui/SectionBackdrop"
+import { IconDiscover } from "@/components/icons/MissionIcons"
 import { useMissionProgress } from "@/components/providers/MissionProvider"
 import { useSmoothScroll } from "@/components/providers/SmoothScroll"
 import { useRegisterStage } from "@/hooks/useRegisterStage"
@@ -35,10 +37,12 @@ const Hero = () => {
       id="s-discover"
       className="relative flex min-h-screen flex-col justify-center border-b border-[var(--hairline)] px-[clamp(28px,7vw,110px)] py-[120px]"
     >
+      <SectionBackdrop mark="00" />
       <CornerMarks />
 
       <Reveal wipe>
-        <div className="mb-[26px] text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">
+        <div className="mb-[26px] flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">
+          <IconDiscover size={16} />
           {hero.kicker}
         </div>
       </Reveal>

@@ -3,8 +3,10 @@
 import { useCallback, type MouseEvent } from "react"
 import CornerMarks from "@/components/ui/CornerMarks"
 import Reveal from "@/components/ui/Reveal"
+import SectionBackdrop from "@/components/ui/SectionBackdrop"
 import SectionLabel from "@/components/ui/SectionLabel"
 import { useMissionProgress } from "@/components/providers/MissionProvider"
+import { valueIcons } from "@/components/icons/MissionIcons"
 import {
   bootGate,
   contactEmail,
@@ -44,6 +46,7 @@ const Final = () => {
       id={FINAL_ID}
       className="relative flex min-h-[88vh] flex-col justify-center border-b-0 px-[clamp(28px,7vw,110px)] py-[120px]"
     >
+      <SectionBackdrop mark="07" />
       <CornerMarks />
 
       <Reveal wipe>
@@ -65,14 +68,23 @@ const Final = () => {
 
       <Reveal delay={3}>
         <div className="mt-11 flex max-w-[760px] flex-wrap gap-3">
-          {values.map((value) => (
-            <span
-              key={value}
-              className="border border-[var(--hairline-strong)] px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--dim)]"
-            >
-              {value}
-            </span>
-          ))}
+          {values.map((value) => {
+            const ValueIcon = valueIcons[value]
+            return (
+              <span
+                key={value}
+                className="inline-flex items-center gap-2.5 border border-[var(--hairline-strong)] px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--dim)]"
+              >
+                {ValueIcon ? (
+                  <ValueIcon
+                    size={14}
+                    className="shrink-0 text-[var(--accent)]"
+                  />
+                ) : null}
+                {value}
+              </span>
+            )
+          })}
         </div>
       </Reveal>
 
