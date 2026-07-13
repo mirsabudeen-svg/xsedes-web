@@ -18,11 +18,15 @@ export type MissionContextValue = {
   progress: number
   activeStage: StageKey | null
   clearedStages: ReadonlySet<StageKey>
+  /** Non-stage sections that have been scrolled past (e.g. s-positioning). */
+  clearedSections: ReadonlySet<string>
   complete: boolean
   gateDismissed: boolean
   dismissGate: () => void
   /** Register a stage section element for IntersectionObserver tracking. */
   registerStage: (key: StageKey, el: HTMLElement | null) => void
+  /** Register a non-stage section for cleared-tick tracking. */
+  registerClearable: (id: string, el: HTMLElement | null) => void
   reducedMotion: boolean
 }
 
@@ -56,6 +60,9 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
   const [clearedStages, setClearedStages] = useState<ReadonlySet<StageKey>>(
     () => new Set(),
   )
+  const [clearedSections, setClearedSections] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  )
   const [complete, setComplete] = useState(false)
   // Immediate client init from sessionStorage so revisits arm reveals on first paint.
   const [gateDismissed, setGateDismissed] = useState(() => {
@@ -69,6 +76,7 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
 
   const completeRef = useRef(false)
   const stageEls = useRef(new Map<StageKey, HTMLElement>())
+  const clearableEls = useRef(new Map<string, HTMLElement>())
   const observersRef = useRef<IntersectionObserver[]>([])
 
   const dismissGate = useCallback(() => {
@@ -92,8 +100,22 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
     })
   }, [])
 
+  const markSectionCleared = useCallback((id: string) => {
+    setClearedSections((prev) => {
+      if (prev.has(id)) return prev
+      const next = new Set(prev)
+      next.add(id)
+      return next
+    })
+  }, [])
+
   const markAllCleared = useCallback(() => {
     setClearedStages(new Set(STAGE_KEYS))
+    setClearedSections((prev) => {
+      const next = new Set(prev)
+      clearableEls.current.forEach((_, id) => next.add(id))
+      return next
+    })
   }, [])
 
   // Single passive scroll listener — progress + one-shot complete.
@@ -151,7 +173,24 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
 
     stageEls.current.forEach((el) => stageIO.observe(el))
     observersRef.current.push(stageIO)
-  }, [markCleared])
+
+    const clearIO = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const id = (entry.target as HTMLElement).dataset.clearable
+          if (!id) return
+          if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+            markSectionCleared(id)
+            ;(entry.target as HTMLElement).classList.add("cleared")
+          }
+        })
+      },
+      { threshold: 0 },
+    )
+
+    clearableEls.current.forEach((el) => clearIO.observe(el))
+    observersRef.current.push(clearIO)
+  }, [markCleared, markSectionCleared])
 
   const registerStage = useCallback(
     (key: StageKey, el: HTMLElement | null) => {
@@ -160,6 +199,19 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
         stageEls.current.set(key, el)
       } else {
         stageEls.current.delete(key)
+      }
+      reconnectObservers()
+    },
+    [reconnectObservers],
+  )
+
+  const registerClearable = useCallback(
+    (id: string, el: HTMLElement | null) => {
+      if (el) {
+        el.dataset.clearable = id
+        clearableEls.current.set(id, el)
+      } else {
+        clearableEls.current.delete(id)
       }
       reconnectObservers()
     },
@@ -176,20 +228,24 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
       progress,
       activeStage,
       clearedStages,
+      clearedSections,
       complete,
       gateDismissed,
       dismissGate,
       registerStage,
+      registerClearable,
       reducedMotion,
     }),
     [
       progress,
       activeStage,
       clearedStages,
+      clearedSections,
       complete,
       gateDismissed,
       dismissGate,
       registerStage,
+      registerClearable,
       reducedMotion,
     ],
   )

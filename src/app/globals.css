@@ -38,6 +38,16 @@ body.gated {
   }
 }
 
+@keyframes hintPulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
