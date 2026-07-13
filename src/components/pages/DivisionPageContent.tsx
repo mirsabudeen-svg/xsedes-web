@@ -93,7 +93,7 @@ const DivisionPageContent = ({
             {copy.capabilities.map((cap) => (
               <li
                 key={cap}
-                className="border border-[var(--hairline)] px-6 py-5 text-[14px] text-[var(--dim)]"
+                className="border border-[var(--hairline)] px-6 py-5 text-[14px] text-[var(--dim)] transition-[color,border-color,padding-left] duration-[400ms] ease-[var(--ease)] [@media(hover:hover)]:hover:border-[rgba(78,242,211,0.35)] [@media(hover:hover)]:hover:pl-7 [@media(hover:hover)]:hover:text-[var(--text)]"
               >
                 {cap}
               </li>

@@ -28,11 +28,11 @@ const Positioning = () => {
     >
       <CornerMarks />
 
-      <Reveal>
+      <Reveal wipe>
         <SectionLabel cleared={cleared}>{positioning.eyebrow}</SectionLabel>
       </Reveal>
 
-      <Reveal delay={1}>
+      <Reveal delay={1} wipe>
         <h2 className="text-[clamp(30px,4.2vw,56px)] font-extrabold uppercase leading-[1.04] tracking-[0.015em]">
           {positioning.headlineBefore}
           <span className="text-[var(--accent)]">

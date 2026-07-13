@@ -45,6 +45,7 @@ const MissionChrome = ({ children }: { children: ReactNode }) => {
     return (
       <>
         <SilentGateDismiss />
+        <GridField />
         <SmoothScroll>
           <div className="relative z-[1]">{children}</div>
         </SmoothScroll>

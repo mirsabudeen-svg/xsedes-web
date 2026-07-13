@@ -10,8 +10,8 @@ import { footer, site } from "@/content/site"
  * content column so it never competes with the fixed rail/bar layers.
  */
 const SiteFooter = () => (
-  <footer className="border-t border-[var(--hairline)] px-[clamp(20px,5vw,48px)] py-[clamp(48px,8vw,88px)]">
-    <SectionLabel>§ 09 · CONTACT</SectionLabel>
+  <footer className="border-t border-[var(--hairline)] px-[clamp(28px,7vw,110px)] py-[clamp(48px,8vw,88px)]">
+    <SectionLabel>{footer.eyebrow}</SectionLabel>
 
     <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5">
       <div>
@@ -46,14 +46,12 @@ const SiteFooter = () => (
         <ul className="flex list-none flex-col gap-2.5">
           {brandDirectory.map((b) => (
             <li key={b.slug}>
-              <a
+              <Link
                 href={`/${b.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="text-[13px] text-[var(--dim)] no-underline transition-colors duration-300 ease-[var(--ease)] hover:text-[var(--accent)]"
               >
-                {b.label} ↗
-              </a>
+                {b.label}
+              </Link>
             </li>
           ))}
         </ul>

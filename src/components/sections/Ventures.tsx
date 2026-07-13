@@ -1,60 +1,16 @@
 "use client"
 
-import {
-  useCallback,
-  type CSSProperties,
-  type PointerEvent,
-} from "react"
+import { useCallback } from "react"
 import CornerMarks from "@/components/ui/CornerMarks"
 import Reveal from "@/components/ui/Reveal"
+import SectionEnter from "@/components/motion/SectionEnter"
 import SectionLabel from "@/components/ui/SectionLabel"
+import VentureCard from "@/components/ui/VentureCard"
 import { useMissionProgress } from "@/components/providers/MissionProvider"
 import { venturesSection } from "@/content/site"
-import { ventures, type Venture } from "@/content/ventures"
+import { ventures } from "@/content/ventures"
 
 const VENTURES_ID = "s-ventures"
-
-const handleCardPointerMove = (e: PointerEvent<HTMLElement>) => {
-  const el = e.currentTarget
-  const rect = el.getBoundingClientRect()
-  el.style.setProperty("--gx", `${e.clientX - rect.left}px`)
-  el.style.setProperty("--gy", `${e.clientY - rect.top}px`)
-}
-
-type VentureCardProps = {
-  venture: Venture
-}
-
-const VentureCard = ({ venture }: VentureCardProps) => (
-  <article
-    data-venture={venture.id}
-    onPointerMove={handleCardPointerMove}
-    className="group relative overflow-hidden bg-[var(--ink)] px-7 pb-[38px] pt-[34px] transition-[background] duration-500 ease-[var(--ease)] hover:bg-[var(--glass)]"
-    style={{ "--gx": "50%", "--gy": "50%" } as CSSProperties}
-  >
-    <span
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-[450ms] ease-[var(--ease)] group-hover:opacity-100"
-      style={{
-        background:
-          "radial-gradient(220px circle at var(--gx) var(--gy), rgba(78,242,211,.09), transparent 70%)",
-      }}
-    />
-    <span
-      aria-hidden="true"
-      className="absolute right-3.5 top-3.5 h-3 w-3 border-r border-t border-[var(--hairline-strong)] transition-[border-color] duration-500 ease-[var(--ease)] group-hover:border-[var(--accent)]"
-    />
-    <div className="relative mb-[18px] text-[9px] font-semibold uppercase tracking-[0.22em] text-[var(--faint)]">
-      {venture.industry}
-    </div>
-    <h3 className="relative text-[20px] font-extrabold uppercase tracking-[0.04em]">
-      {venture.name}
-    </h3>
-    <p className="relative mt-3.5 text-[14px] leading-[1.65] text-[var(--dim)]">
-      {venture.oneLiner}
-    </p>
-  </article>
-)
 
 const Ventures = () => {
   const { clearedSections, registerClearable } = useMissionProgress()
@@ -75,11 +31,11 @@ const Ventures = () => {
     >
       <CornerMarks />
 
-      <Reveal>
+      <SectionEnter>
         <SectionLabel cleared={cleared}>{venturesSection.eyebrow}</SectionLabel>
-      </Reveal>
+      </SectionEnter>
 
-      <Reveal delay={1}>
+      <Reveal delay={1} wipe>
         <h2 className="text-[clamp(30px,4.2vw,56px)] font-extrabold uppercase leading-[1.04] tracking-[0.015em]">
           {venturesSection.headlineBefore}
           <span className="text-[var(--accent)]">
@@ -97,7 +53,15 @@ const Ventures = () => {
       <Reveal delay={3}>
         <div className="mt-14 grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-px border border-[var(--hairline)] bg-[var(--hairline)]">
           {ventures.map((venture) => (
-            <VentureCard key={venture.id} venture={venture} />
+            <VentureCard
+              key={venture.id}
+              href={`/${venture.id}`}
+              id={venture.id}
+              name={venture.name}
+              eyebrow={venture.industry}
+              description={venture.oneLiner}
+              headingLevel="h3"
+            />
           ))}
         </div>
       </Reveal>

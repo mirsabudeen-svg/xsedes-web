@@ -37,13 +37,13 @@ const Hero = () => {
     >
       <CornerMarks />
 
-      <Reveal>
+      <Reveal wipe>
         <div className="mb-[26px] text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">
           {hero.kicker}
         </div>
       </Reveal>
 
-      <Reveal delay={1}>
+      <Reveal delay={1} wipe>
         <h1 className="text-[clamp(40px,6.4vw,86px)] font-extrabold uppercase leading-[1.04] tracking-[0.015em]">
           {hero.lines[0]}
           <br />

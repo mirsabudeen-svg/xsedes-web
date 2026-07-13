@@ -24,8 +24,8 @@ export const venturePages: readonly VenturePageCopy[] = ventures.map((v) => ({
 }))
 
 export const subBrandBackLink = {
-  label: "← XSEDES",
-  href: "/",
+  label: "← Brands",
+  href: "/brands",
 } as const
 
 export const getVenturePage = (slug: string) =>

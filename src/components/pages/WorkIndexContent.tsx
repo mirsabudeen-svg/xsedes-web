@@ -146,8 +146,12 @@ const WorkIndexContent = ({ caseStudies, industries }: WorkIndexContentProps) =>
                   <Link
                     key={c.slug}
                     href={`/work/${c.slug}`}
-                    className="block bg-[var(--ink)] px-6 pb-7 pt-6 no-underline transition-colors duration-300 ease-[var(--ease)] hover:bg-[var(--glass)]"
+                    className="group relative block overflow-hidden bg-[var(--ink)] px-6 pb-7 pt-6 no-underline transition-[background,transform] duration-500 ease-[var(--ease)] hover:-translate-y-0.5 hover:bg-[var(--glass)] focus-visible:bg-[var(--glass)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--accent)]"
                   >
+                    <span
+                      aria-hidden="true"
+                      className="absolute right-3.5 top-3.5 h-3 w-3 border-r border-t border-[var(--hairline-strong)] transition-[border-color] duration-500 ease-[var(--ease)] group-hover:border-[var(--accent)]"
+                    />
                     <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
                       {divisionLabel} · {c.industry}
                     </p>

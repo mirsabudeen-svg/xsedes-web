@@ -86,6 +86,7 @@ export const values = [
 export const footer = {
   copyright: "© XSEDES Private Limited",
   tagline: "Engineering Extraordinary Event Experiences",
+  eyebrow: "§ Site",
 } as const
 
 export const bootGate = {

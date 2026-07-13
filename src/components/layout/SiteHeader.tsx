@@ -1,24 +1,34 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { divisions } from "@/content/divisions"
 import { site } from "@/content/site"
 
+const navLinkClass = (active: boolean) =>
+  `text-[11px] font-semibold uppercase tracking-[0.2em] no-underline transition-colors duration-300 ease-[var(--ease)] ${
+    active
+      ? "text-[var(--accent)]"
+      : "text-[var(--dim)] hover:text-[var(--accent)]"
+  }`
+
 /**
- * Site-wide top nav — ported from website/src/components/SiteHeader.astro.
- * Distinct from MissionRail (the homepage scroll-stage telemetry rail):
- * this is page-to-page wayfinding for /about, /brands, /careers, /contact,
- * /work and the /divisions/[slug] routes. Rendered in-flow (not fixed/
- * sticky) so it never fights the rail's or MissionBar's fixed z-50 layers,
- * and sits outside the boot-gate's overlay stack.
+ * Sticky multipage top nav with active-route teal cue.
  */
 const SiteHeader = () => {
+  const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [divisionsOpen, setDivisionsOpen] = useState(false)
 
+  const isDivisions = pathname?.startsWith("/divisions") ?? false
+  const isWork = pathname === "/work" || (pathname?.startsWith("/work/") ?? false)
+  const isBrands = pathname === "/brands"
+  const isAbout = pathname === "/about"
+  const isContact = pathname === "/contact"
+
   return (
-    <header className="relative z-10 flex items-center justify-between border-b border-[var(--hairline)] px-[clamp(20px,5vw,48px)] py-5">
+    <header className="sticky top-0 z-40 flex items-center justify-between border-b border-[var(--hairline)] bg-black/75 px-[clamp(28px,7vw,110px)] py-5 backdrop-blur-[8px]">
       <Link
         href="/"
         className="text-[15px] font-extrabold uppercase tracking-[0.28em] text-[var(--text)] no-underline"
@@ -37,7 +47,8 @@ const SiteHeader = () => {
             type="button"
             onClick={() => setDivisionsOpen((v) => !v)}
             aria-expanded={divisionsOpen}
-            className="flex items-center gap-1.5 bg-transparent text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--dim)] transition-colors duration-300 ease-[var(--ease)] hover:text-[var(--accent)]"
+            aria-current={isDivisions ? "page" : undefined}
+            className={`flex items-center gap-1.5 bg-transparent ${navLinkClass(isDivisions)}`}
           >
             Divisions
           </button>
@@ -46,39 +57,52 @@ const SiteHeader = () => {
               divisionsOpen ? "flex flex-col" : "hidden"
             }`}
           >
-            {divisions.map((d) => (
-              <li key={d.id}>
-                <Link
-                  href={`/divisions/${d.id}`}
-                  className="block px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--dim)] no-underline transition-colors duration-300 ease-[var(--ease)] hover:text-[var(--accent)]"
-                >
-                  {d.name}
-                </Link>
-              </li>
-            ))}
+            {divisions.map((d) => {
+              const href = `/divisions/${d.id}`
+              const active = pathname === href
+              return (
+                <li key={d.id}>
+                  <Link
+                    href={href}
+                    aria-current={active ? "page" : undefined}
+                    className={`block px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] no-underline transition-colors duration-300 ease-[var(--ease)] ${
+                      active
+                        ? "text-[var(--accent)]"
+                        : "text-[var(--dim)] hover:text-[var(--accent)]"
+                    }`}
+                  >
+                    {d.name}
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
         </div>
         <Link
           href="/work"
-          className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--dim)] no-underline transition-colors duration-300 ease-[var(--ease)] hover:text-[var(--accent)]"
+          aria-current={isWork ? "page" : undefined}
+          className={navLinkClass(isWork)}
         >
           Work
         </Link>
         <Link
           href="/brands"
-          className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--dim)] no-underline transition-colors duration-300 ease-[var(--ease)] hover:text-[var(--accent)]"
+          aria-current={isBrands ? "page" : undefined}
+          className={navLinkClass(isBrands)}
         >
           Brands
         </Link>
         <Link
           href="/about"
-          className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--dim)] no-underline transition-colors duration-300 ease-[var(--ease)] hover:text-[var(--accent)]"
+          aria-current={isAbout ? "page" : undefined}
+          className={navLinkClass(isAbout)}
         >
           About
         </Link>
         <Link
           href="/contact"
-          className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--dim)] no-underline transition-colors duration-300 ease-[var(--ease)] hover:text-[var(--accent)]"
+          aria-current={isContact ? "page" : undefined}
+          className={navLinkClass(isContact)}
         >
           Contact
         </Link>
@@ -97,7 +121,7 @@ const SiteHeader = () => {
       {mobileOpen && (
         <nav
           aria-label="Primary mobile"
-          className="absolute left-0 right-0 top-full flex flex-col gap-1 border-b border-[var(--hairline)] bg-[var(--ink)] px-[clamp(20px,5vw,48px)] py-4 md:hidden"
+          className="absolute left-0 right-0 top-full flex flex-col gap-1 border-b border-[var(--hairline)] bg-[var(--ink)] px-[clamp(28px,7vw,110px)] py-4 md:hidden"
         >
           {divisions.map((d) => (
             <Link
