@@ -24,6 +24,20 @@ body {
   min-height: 100vh;
 }
 
+body.gated {
+  overflow: hidden;
+}
+
+@keyframes btnPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(78, 242, 211, 0.28);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(78, 242, 211, 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

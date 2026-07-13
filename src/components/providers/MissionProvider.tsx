@@ -57,8 +57,15 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
     () => new Set(),
   )
   const [complete, setComplete] = useState(false)
-  const [gateDismissed, setGateDismissed] = useState(false)
-  const [reducedMotion, setReducedMotion] = useState(false)
+  // Immediate client init from sessionStorage so revisits arm reveals on first paint.
+  const [gateDismissed, setGateDismissed] = useState(() => {
+    if (typeof window === "undefined") return false
+    return readBootSeen()
+  })
+  const [reducedMotion, setReducedMotion] = useState(() => {
+    if (typeof window === "undefined") return false
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  })
 
   const completeRef = useRef(false)
   const stageEls = useRef(new Map<StageKey, HTMLElement>())
@@ -69,15 +76,10 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
     setGateDismissed(true)
   }, [])
 
-  // Hydrate gate + reduced-motion after mount (SSR-safe).
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
     const syncMotion = () => setReducedMotion(mq.matches)
-    syncMotion()
     mq.addEventListener("change", syncMotion)
-
-    if (readBootSeen()) setGateDismissed(true)
-
     return () => mq.removeEventListener("change", syncMotion)
   }, [])
 

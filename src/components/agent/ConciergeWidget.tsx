@@ -5,6 +5,7 @@
 // mechanical transitions, keyboard accessible.
 
 import { useEffect, useRef, useState } from "react";
+import { useMissionProgress } from "@/components/providers/MissionProvider";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -15,6 +16,7 @@ const OPENER: Msg = {
 };
 
 export default function ConciergeWidget() {
+  const { gateDismissed } = useMissionProgress();
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([OPENER]);
   const [input, setInput] = useState("");
@@ -64,6 +66,8 @@ export default function ConciergeWidget() {
       inputRef.current?.focus();
     }
   }
+
+  if (!gateDismissed) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-[90] font-[Barlow]">
