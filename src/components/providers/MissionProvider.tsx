@@ -117,6 +117,12 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [markAllCleared])
 
+  // body.complete hook for Final / system-line styling (Phase 9).
+  useEffect(() => {
+    document.body.classList.toggle("complete", complete)
+    return () => document.body.classList.remove("complete")
+  }, [complete])
+
   const reconnectObservers = useCallback(() => {
     observersRef.current.forEach((o) => o.disconnect())
     observersRef.current = []
