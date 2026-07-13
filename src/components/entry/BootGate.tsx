@@ -129,6 +129,7 @@ const BootGate = () => {
       role="dialog"
       aria-label={bootGate.ariaLabel}
       aria-modal="true"
+      data-boot-gate=""
       className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[var(--ink)] px-8 text-center transition-[opacity,filter,transform] duration-[900ms] ease-[var(--ease)] ${
         exiting
           ? "pointer-events-none -translate-y-6 opacity-0 blur-[8px]"
