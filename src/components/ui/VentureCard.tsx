@@ -9,6 +9,10 @@ import Link from "next/link"
 import { motion } from "motion/react"
 import { brandTweenFast } from "@/lib/motion"
 import { useMissionProgress } from "@/components/providers/MissionProvider"
+import {
+  ventureIcons,
+  type VentureIconKey,
+} from "@/components/icons/MissionIcons"
 
 const handleCardPointerMove = (e: PointerEvent<HTMLElement>) => {
   const el = e.currentTarget
@@ -28,7 +32,7 @@ type VentureCardProps = {
 }
 
 /**
- * Shared interactive venture/brand card — Link + cursor glow + mechanical lift.
+ * Shared interactive venture/brand card — Link + icon + cursor glow.
  */
 const VentureCard = ({
   href,
@@ -40,6 +44,7 @@ const VentureCard = ({
 }: VentureCardProps) => {
   const { reducedMotion } = useMissionProgress()
   const Heading = headingLevel
+  const Icon = ventureIcons[id as VentureIconKey]
 
   const inner = (
     <>
@@ -55,6 +60,11 @@ const VentureCard = ({
         aria-hidden="true"
         className="absolute right-3.5 top-3.5 h-3 w-3 border-r border-t border-[var(--hairline-strong)] transition-[border-color] duration-500 ease-[var(--ease)] group-hover:border-[var(--accent)] group-focus-visible:border-[var(--accent)]"
       />
+      {Icon ? (
+        <span className="relative mb-5 inline-flex h-10 w-10 items-center justify-center border border-[var(--hairline)] text-[var(--faint)] transition-colors duration-500 ease-[var(--ease)] group-hover:border-[var(--accent)] group-hover:text-[var(--accent)]">
+          <Icon size={18} />
+        </span>
+      ) : null}
       <div className="relative mb-[18px] text-[9px] font-semibold uppercase tracking-[0.22em] text-[var(--faint)]">
         {eyebrow}
       </div>
@@ -71,7 +81,7 @@ const VentureCard = ({
   )
 
   const className =
-    "group relative block overflow-hidden bg-[var(--ink)] px-7 pb-[38px] pt-[34px] no-underline outline-none transition-[background,transform] duration-500 ease-[var(--ease)] hover:bg-[var(--glass)] focus-visible:bg-[var(--glass)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--accent)]"
+    "group relative block overflow-hidden bg-[var(--ink)]/80 px-7 pb-[38px] pt-[34px] no-underline outline-none backdrop-blur-[2px] transition-[background,transform] duration-500 ease-[var(--ease)] hover:bg-[var(--glass)] focus-visible:bg-[var(--glass)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--accent)]"
 
   if (reducedMotion) {
     return (
