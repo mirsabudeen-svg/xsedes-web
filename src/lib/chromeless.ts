@@ -15,3 +15,7 @@ export const isChromelessPath = (pathname: string | null): boolean => {
     (p) => pathname === p || pathname.startsWith(`${p}/`),
   )
 }
+
+/** Single-page mission home — BootGate, rail/bar, particles, mission Footer. */
+export const isMissionHomePath = (pathname: string | null): boolean =>
+  pathname === "/"

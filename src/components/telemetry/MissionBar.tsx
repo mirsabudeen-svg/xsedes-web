@@ -19,7 +19,9 @@ const MissionBar = () => {
   return (
     <div
       data-mission-bar=""
-      aria-hidden="true"
+      role="status"
+      aria-live="polite"
+      aria-label={`Mission progress ${progress}% · ${stageName}`}
       className="fixed left-0 right-0 top-0 z-50 border-b border-[var(--hairline)] bg-black/70 px-[18px] pb-2.5 pt-3 backdrop-blur-[8px] min-[981px]:hidden"
     >
       <div className="flex items-baseline justify-between">

@@ -16,35 +16,40 @@ const OPENER: Msg = {
 export default function ConciergeWidget() {
   const pathname = usePathname()
   const { gateDismissed } = useMissionProgress()
+  const [mounted, setMounted] = useState(false)
   const [open, setOpen] = useState(false)
-  const [msgs, setMsgs] = useState<Msg[]>([OPENER]);
-  const [input, setInput] = useState("");
-  const [busy, setBusy] = useState(false);
-  const logRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [msgs, setMsgs] = useState<Msg[]>([OPENER])
+  const [input, setInput] = useState("")
+  const [busy, setBusy] = useState(false)
+  const logRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    logRef.current?.scrollTo({ top: logRef.current.scrollHeight });
-  }, [msgs, open]);
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
-    if (open) inputRef.current?.focus();
-  }, [open]);
+    logRef.current?.scrollTo({ top: logRef.current.scrollHeight })
+  }, [msgs, open])
+
+  useEffect(() => {
+    if (open) inputRef.current?.focus()
+  }, [open])
 
   async function send() {
-    const text = input.trim();
-    if (!text || busy) return;
-    const next = [...msgs, { role: "user" as const, content: text }];
-    setMsgs(next);
-    setInput("");
-    setBusy(true);
+    const text = input.trim()
+    if (!text || busy) return
+    const next = [...msgs, { role: "user" as const, content: text }]
+    setMsgs(next)
+    setInput("")
+    setBusy(true)
     try {
       const res = await fetch("/api/concierge", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ messages: next.slice(-20) }),
-      });
-      const data = (await res.json()) as { reply?: string; error?: string };
+      })
+      const data = (await res.json()) as { reply?: string; error?: string }
       setMsgs((m) => [
         ...m,
         {
@@ -54,19 +59,21 @@ export default function ConciergeWidget() {
             data.error ??
             "Something went wrong — please try again or use the contact link.",
         },
-      ]);
+      ])
     } catch {
       setMsgs((m) => [
         ...m,
         { role: "assistant", content: "Connection issue — please try again." },
-      ]);
+      ])
     } finally {
-      setBusy(false);
-      inputRef.current?.focus();
+      setBusy(false)
+      inputRef.current?.focus()
     }
   }
 
-  if (!gateDismissed || isChromelessPath(pathname)) return null;
+  // Defer until mount so SSR (gateDismissed=false) matches the first client paint.
+  if (!mounted || !gateDismissed || isChromelessPath(pathname)) return null
+
 
   return (
     <div className="fixed bottom-6 right-6 z-[90] font-[Barlow]">

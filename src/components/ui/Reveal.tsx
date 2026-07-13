@@ -29,11 +29,13 @@ const Reveal = ({ children, delay = 0, className = "" }: RevealProps) => {
     const el = ref.current
     if (!el) return
 
+    const reveal = () => setVisible(true)
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return
-          setVisible(true)
+          reveal()
           io.unobserve(entry.target)
         })
       },
@@ -41,6 +43,17 @@ const Reveal = ({ children, delay = 0, className = "" }: RevealProps) => {
     )
 
     io.observe(el)
+
+    // After boot-gate dismiss, nodes already in view can miss the first IO
+    // callback — sync catch-up so hero content is not left at opacity 0.
+    const rect = el.getBoundingClientRect()
+    const vh = window.innerHeight || 0
+    const overlap = Math.min(rect.bottom, vh) - Math.max(rect.top, 0)
+    if (rect.height > 0 && overlap / rect.height >= 0.18) {
+      reveal()
+      io.unobserve(el)
+    }
+
     return () => io.disconnect()
   }, [gateDismissed, reducedMotion])
 

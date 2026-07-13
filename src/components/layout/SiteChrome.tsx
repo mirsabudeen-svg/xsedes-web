@@ -4,29 +4,29 @@ import type { ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import SiteFooter from "@/components/layout/SiteFooter"
 import SiteHeader from "@/components/layout/SiteHeader"
-import { isChromelessPath } from "@/lib/chromeless"
+import { isChromelessPath, isMissionHomePath } from "@/lib/chromeless"
 
 type SiteChromeProps = {
   children: ReactNode
 }
 
 /**
- * Renders SiteHeader/SiteFooter for multi-page routes. Venture landings
- * stay chromeless. Mission home (`/`) keeps SiteHeader for wayfinding but
- * uses sections/Footer instead of the multi-column SiteFooter.
+ * Multi-page routes get SiteHeader + SiteFooter.
+ * Mission home (`/`) is headerless — MissionRail + sections/Footer own chrome.
+ * Venture landings stay fully chromeless.
  */
 const SiteChrome = ({ children }: SiteChromeProps) => {
   const pathname = usePathname()
-  const chromeless = isChromelessPath(pathname)
-  const isMissionHome = pathname === "/"
 
-  if (chromeless) return <>{children}</>
+  if (isChromelessPath(pathname) || isMissionHomePath(pathname)) {
+    return <>{children}</>
+  }
 
   return (
     <>
       <SiteHeader />
       {children}
-      {isMissionHome ? null : <SiteFooter />}
+      <SiteFooter />
     </>
   )
 }

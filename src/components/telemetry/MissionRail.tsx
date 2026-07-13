@@ -26,9 +26,14 @@ const getStateLabel = (
   return stage.idleState
 }
 
-const getSystemStatus = (progress: number, complete: boolean): string => {
+const getSystemStatus = (
+  progress: number,
+  complete: boolean,
+  gateDismissed: boolean,
+): string => {
   if (complete || progress >= 100) return rail.statusOperational
   if (progress > 0) return rail.statusTracking
+  if (!gateDismissed) return rail.statusInitialising
   return rail.statusStandby
 }
 
@@ -42,6 +47,7 @@ const MissionRail = () => {
     activeStage,
     clearedStages,
     complete,
+    gateDismissed,
     reducedMotion,
   } = useMissionProgress()
   const { scrollTo } = useSmoothScroll()
@@ -60,7 +66,7 @@ const MissionRail = () => {
     }
   }
 
-  const status = getSystemStatus(progress, complete)
+  const status = getSystemStatus(progress, complete, gateDismissed)
 
   return (
     <aside

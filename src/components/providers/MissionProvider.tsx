@@ -22,7 +22,12 @@ export type MissionContextValue = {
   clearedSections: ReadonlySet<string>
   complete: boolean
   gateDismissed: boolean
+  /** Persist session + dismiss — used by BootGate on mission home. */
   dismissGate: () => void
+  /** Arm reveals/Lenis without writing sessionStorage — used on multipage routes. */
+  armReveals: () => void
+  /** Re-open boot pending state when landing on `/` before the session flag is set. */
+  prepareBootGate: () => void
   /** Register a stage section element for IntersectionObserver tracking. */
   registerStage: (key: StageKey, el: HTMLElement | null) => void
   /** Register a non-stage section for cleared-tick tracking. */
@@ -64,15 +69,10 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
     () => new Set(),
   )
   const [complete, setComplete] = useState(false)
-  // Immediate client init from sessionStorage so revisits arm reveals on first paint.
-  const [gateDismissed, setGateDismissed] = useState(() => {
-    if (typeof window === "undefined") return false
-    return readBootSeen()
-  })
-  const [reducedMotion, setReducedMotion] = useState(() => {
-    if (typeof window === "undefined") return false
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  })
+  // Always false on first paint (SSR + hydrate). Session restore runs in an effect
+  // so client markup matches the server and BootGate can still skip via its own read.
+  const [gateDismissed, setGateDismissed] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(false)
 
   const completeRef = useRef(false)
   const stageEls = useRef(new Map<StageKey, HTMLElement>())
@@ -84,9 +84,22 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
     setGateDismissed(true)
   }, [])
 
+  const armReveals = useCallback(() => {
+    setGateDismissed(true)
+  }, [])
+
+  const prepareBootGate = useCallback(() => {
+    if (!readBootSeen()) setGateDismissed(false)
+  }, [])
+
+  useEffect(() => {
+    if (readBootSeen()) setGateDismissed(true)
+  }, [])
+
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
     const syncMotion = () => setReducedMotion(mq.matches)
+    syncMotion()
     mq.addEventListener("change", syncMotion)
     return () => mq.removeEventListener("change", syncMotion)
   }, [])
@@ -131,6 +144,7 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
         completeRef.current = true
         setComplete(true)
         markAllCleared()
+        setActiveStage(STAGE_KEYS[STAGE_KEYS.length - 1] ?? "ops")
       }
     }
 
@@ -232,6 +246,8 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
       complete,
       gateDismissed,
       dismissGate,
+      armReveals,
+      prepareBootGate,
       registerStage,
       registerClearable,
       reducedMotion,
@@ -244,6 +260,8 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
       complete,
       gateDismissed,
       dismissGate,
+      armReveals,
+      prepareBootGate,
       registerStage,
       registerClearable,
       reducedMotion,

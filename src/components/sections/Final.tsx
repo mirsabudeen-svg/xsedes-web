@@ -95,7 +95,11 @@ const Final = () => {
       </Reveal>
 
       <Reveal delay={4}>
-        <div className="mt-16 flex flex-wrap gap-[34px] border-t border-[var(--hairline)] pt-[22px] text-[9.5px] font-semibold uppercase tracking-[0.22em] text-[var(--faint)]">
+        <div
+          role="status"
+          aria-live="polite"
+          className="mt-16 flex flex-wrap gap-[34px] border-t border-[var(--hairline)] pt-[22px] text-[9.5px] font-semibold uppercase tracking-[0.22em] text-[var(--faint)]"
+        >
           {final.systemLabels.map((label) => (
             <span key={label}>
               {label}{" "}

@@ -12,28 +12,39 @@ import {
 import { SmoothScroll } from "@/components/providers/SmoothScroll"
 import MissionBar from "@/components/telemetry/MissionBar"
 import MissionRail from "@/components/telemetry/MissionRail"
-import { isChromelessPath } from "@/lib/chromeless"
+import { isChromelessPath, isMissionHomePath } from "@/lib/chromeless"
 
 type MissionShellProps = {
   children: ReactNode
 }
 
-const ChromelessGateDismiss = () => {
-  const { dismissGate, gateDismissed } = useMissionProgress()
+/** Ensures reveals/Lenis can arm on non-mission routes that skip BootGate. */
+const SilentGateDismiss = () => {
+  const { armReveals, gateDismissed } = useMissionProgress()
   useEffect(() => {
-    if (!gateDismissed) dismissGate()
-  }, [dismissGate, gateDismissed])
+    if (!gateDismissed) armReveals()
+  }, [armReveals, gateDismissed])
+  return null
+}
+
+/** If the session has not seen the boot, keep gate pending when entering `/`. */
+const MissionHomeBootstrap = () => {
+  const { prepareBootGate } = useMissionProgress()
+  useEffect(() => {
+    prepareBootGate()
+  }, [prepareBootGate])
   return null
 }
 
 const MissionChrome = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname()
   const chromeless = isChromelessPath(pathname)
+  const missionHome = isMissionHomePath(pathname)
 
-  if (chromeless) {
+  if (chromeless || !missionHome) {
     return (
       <>
-        <ChromelessGateDismiss />
+        <SilentGateDismiss />
         <SmoothScroll>
           <div className="relative z-[1]">{children}</div>
         </SmoothScroll>
@@ -43,6 +54,7 @@ const MissionChrome = ({ children }: { children: ReactNode }) => {
 
   return (
     <>
+      <MissionHomeBootstrap />
       <ParticleField />
       <GridField />
       <BootGate />
@@ -57,7 +69,7 @@ const MissionChrome = ({ children }: { children: ReactNode }) => {
   )
 }
 
-/** Client shell: mission chrome on main site; minimal shell on venture pages. */
+/** Client shell: full mission chrome on `/` only; minimal shell elsewhere. */
 const MissionShell = ({ children }: MissionShellProps) => (
   <MissionProvider>
     <MissionChrome>{children}</MissionChrome>
