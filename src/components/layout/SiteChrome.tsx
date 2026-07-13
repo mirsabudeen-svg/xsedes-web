@@ -11,13 +11,14 @@ type SiteChromeProps = {
 }
 
 /**
- * Renders SiteHeader/SiteFooter for normal pages. Venture landings
- * (photoshap, velos, konstrukt, bobbs-kitchen, deed) stay chromeless —
- * only the in-page "← XSEDES" back link from VenturePageContent.
+ * Renders SiteHeader/SiteFooter for multi-page routes. Venture landings
+ * stay chromeless. Mission home (`/`) keeps SiteHeader for wayfinding but
+ * uses sections/Footer instead of the multi-column SiteFooter.
  */
 const SiteChrome = ({ children }: SiteChromeProps) => {
   const pathname = usePathname()
   const chromeless = isChromelessPath(pathname)
+  const isMissionHome = pathname === "/"
 
   if (chromeless) return <>{children}</>
 
@@ -25,7 +26,7 @@ const SiteChrome = ({ children }: SiteChromeProps) => {
     <>
       <SiteHeader />
       {children}
-      <SiteFooter />
+      {isMissionHome ? null : <SiteFooter />}
     </>
   )
 }
