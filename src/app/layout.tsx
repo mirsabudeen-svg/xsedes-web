@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Barlow } from "next/font/google"
 import ConciergeWidget from "@/components/agent/ConciergeWidget"
+import SiteChrome from "@/components/layout/SiteChrome"
 import MissionShell from "@/components/providers/MissionShell"
 import "./globals.css"
 
@@ -28,7 +29,7 @@ export default function RootLayout({
         className={`${barlow.className} bg-[var(--ink)] text-[var(--text)] antialiased`}
       >
         <MissionShell>
-          {children}
+          <SiteChrome>{children}</SiteChrome>
           <ConciergeWidget />
         </MissionShell>
       </body>

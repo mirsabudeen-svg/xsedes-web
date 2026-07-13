@@ -1,23 +1,22 @@
-"use client";
-// src/components/agent/ConciergeWidget.tsx
-// Floating chat widget for the Site Concierge agent. Styled to the
-// XSEDES system: black, hairlines, single teal accent, Barlow,
-// mechanical transitions, keyboard accessible.
+"use client"
 
-import { useEffect, useRef, useState } from "react";
-import { useMissionProgress } from "@/components/providers/MissionProvider";
+import { usePathname } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
+import { useMissionProgress } from "@/components/providers/MissionProvider"
+import { isChromelessPath } from "@/lib/chromeless"
 
-type Msg = { role: "user" | "assistant"; content: string };
+type Msg = { role: "user" | "assistant"; content: string }
 
 const OPENER: Msg = {
   role: "assistant",
   content:
     "Hello — I'm the XSEDES concierge. Ask me about our divisions, ventures, or how partnering with us works.",
-};
+}
 
 export default function ConciergeWidget() {
-  const { gateDismissed } = useMissionProgress();
-  const [open, setOpen] = useState(false);
+  const pathname = usePathname()
+  const { gateDismissed } = useMissionProgress()
+  const [open, setOpen] = useState(false)
   const [msgs, setMsgs] = useState<Msg[]>([OPENER]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -67,7 +66,7 @@ export default function ConciergeWidget() {
     }
   }
 
-  if (!gateDismissed) return null;
+  if (!gateDismissed || isChromelessPath(pathname)) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-[90] font-[Barlow]">
