@@ -70,8 +70,15 @@ function check(file) {
       report("WARN", file, n, m[0], "Canonical division names are hyphenated: X-Consult, X-Lab, X-Build, X-Ops");
     }
 
-    for (const m of lineText.matchAll(SERIF)) {
-      report("BLOCKER", file, n, m[0], "Barlow only — no serif faces");
+    // XSMITHS mini-site uses Instrument Serif as selective italic accent
+    // (Website Development Plan). Flagship XSEDES remains Barlow-only.
+    const serifAllowed =
+      rel.startsWith("src/app/xsmiths/") ||
+      rel.startsWith("src/components/xsmiths/");
+    if (!serifAllowed) {
+      for (const m of lineText.matchAll(SERIF)) {
+        report("BLOCKER", file, n, m[0], "Barlow only — no serif faces");
+      }
     }
   });
 

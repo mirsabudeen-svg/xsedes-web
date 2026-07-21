@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useMissionProgress } from "@/components/providers/MissionProvider"
 import { bootGate } from "@/content/site"
+import { useFocusTrap } from "@/hooks/useFocusTrap"
 
 const readBootSeen = (): boolean => {
   if (typeof window === "undefined") return false
@@ -20,8 +21,6 @@ const readBootSeen = (): boolean => {
 const BootGate = () => {
   const { dismissGate, reducedMotion } = useMissionProgress()
 
-  // Client-only mount decision — avoids SSR hydration mismatch.
-  // Revisit with flag set → stays false → gate never mounts.
   const [show, setShow] = useState(false)
   const [exiting, setExiting] = useState(false)
   const [removed, setRemoved] = useState(false)
@@ -30,6 +29,8 @@ const BootGate = () => {
   )
   const [pct, setPct] = useState(0)
   const [ready, setReady] = useState(false)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const skipRef = useRef<HTMLButtonElement>(null)
   const btnRef = useRef<HTMLButtonElement>(null)
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([])
   const dismissedRef = useRef(false)
@@ -41,10 +42,17 @@ const BootGate = () => {
     timersRef.current = []
   }
 
+  const focusMainContent = () => {
+    document.getElementById("main-content")?.focus({ preventScroll: true })
+  }
+
   useEffect(() => {
-    if (readBootSeen()) return
+    if (readBootSeen()) {
+      dismissGate()
+      return
+    }
     setShow(true)
-  }, [])
+  }, [dismissGate])
 
   const handleDismiss = useCallback(() => {
     if (dismissedRef.current) return
@@ -55,26 +63,36 @@ const BootGate = () => {
     if (reducedMotionRef.current) {
       dismissGate()
       setRemoved(true)
+      requestAnimationFrame(focusMainContent)
       return
     }
 
     setExiting(true)
-    // Prototype: arm reveals 250ms into the lift; unmount after 1s.
     timersRef.current.push(setTimeout(() => dismissGate(), 250))
-    timersRef.current.push(setTimeout(() => setRemoved(true), 1000))
+    timersRef.current.push(
+      setTimeout(() => {
+        setRemoved(true)
+        focusMainContent()
+      }, 1000),
+    )
   }, [dismissGate])
 
   const handleDismissRef = useRef(handleDismiss)
   handleDismissRef.current = handleDismiss
 
-  // Boot timeline — runs once when the gate becomes visible.
+  useFocusTrap({
+    active: show && !exiting && !removed,
+    containerRef: dialogRef,
+    onEscape: () => handleDismissRef.current(),
+    initialFocusRef: skipRef,
+  })
+
   useEffect(() => {
     if (!show) return
 
     document.body.classList.add("gated")
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") handleDismissRef.current()
       if (e.key === "Enter" && btnRef.current?.dataset.ready === "1") {
         handleDismissRef.current()
       }
@@ -126,6 +144,7 @@ const BootGate = () => {
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-label={bootGate.ariaLabel}
       aria-modal="true"
@@ -146,6 +165,7 @@ const BootGate = () => {
       />
 
       <button
+        ref={skipRef}
         type="button"
         onClick={handleDismiss}
         className="absolute right-[26px] top-[26px] border border-[var(--hairline-strong)] bg-transparent px-4 py-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-[var(--faint)] transition-colors duration-[400ms] ease-[var(--ease)] hover:border-[var(--accent)] hover:text-[var(--text)] focus-visible:border-[var(--accent)] focus-visible:text-[var(--text)] focus-visible:outline-none"

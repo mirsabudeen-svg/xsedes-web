@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, type MouseEvent } from "react"
+import Link from "next/link"
 import CornerMarks from "@/components/ui/CornerMarks"
 import Reveal from "@/components/ui/Reveal"
 import SectionBackdrop from "@/components/ui/SectionBackdrop"
@@ -9,7 +10,6 @@ import { useMissionProgress } from "@/components/providers/MissionProvider"
 import { valueIcons } from "@/components/icons/MissionIcons"
 import {
   bootGate,
-  contactEmail,
   final,
   values,
 } from "@/content/site"
@@ -90,12 +90,12 @@ const Final = () => {
 
       <Reveal delay={3}>
         <div className="mt-14 flex flex-wrap items-center gap-[26px]">
-          <a
-            href={`mailto:${contactEmail}`}
+          <Link
+            href="/contact"
             className="inline-flex items-center gap-3 bg-[var(--accent)] px-7 py-4 text-[11px] font-bold uppercase tracking-[0.24em] text-[var(--ink)] no-underline transition-[transform,box-shadow] duration-500 ease-[var(--ease)] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(78,242,211,0.22)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--text)]"
           >
             {final.primaryCta}
-          </a>
+          </Link>
           <a
             href="#s-discover"
             onClick={handleReplay}

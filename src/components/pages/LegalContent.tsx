@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useCallback } from "react"
 import CornerMarks from "@/components/ui/CornerMarks"
@@ -13,7 +13,7 @@ type LegalContentProps = {
   lede: string
 }
 
-/** Shared shell for /legal/privacy and /legal/terms — both single-section pages. */
+/** Shared shell for /legal/privacy and /legal/terms â€” both single-section pages. */
 const LegalContent = ({ sectionId, eyebrow, title, lede }: LegalContentProps) => {
   const { clearedSections, registerClearable } = useMissionProgress()
 
@@ -23,7 +23,7 @@ const LegalContent = ({ sectionId, eyebrow, title, lede }: LegalContentProps) =>
   )
 
   return (
-    <main>
+    <main id="main-content" tabIndex={-1}>
       <section
         ref={sectionRef}
         id={sectionId}

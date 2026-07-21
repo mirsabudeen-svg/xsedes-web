@@ -1,7 +1,7 @@
 // Approved XSEDES master copy — extracted verbatim from the canonical
 // prototype (xsedes-home.html) and section prompts. Do not invent claims.
 
-// TODO: confirm before launch
+/** Primary public inbox — confirmed for site CTAs and legal notices. */
 export const contactEmail = "hello@xsedes.com"
 
 export const site = {
@@ -58,7 +58,7 @@ export const venturesSection = {
   headlineBefore: "Built in-house",
   headlineAccent: ", incubated to stand alone.",
   lede:
-    "Five ventures currently incubated inside XSEDES — each one an application of the same engineering pipeline to a different industry.",
+    "Six ventures currently incubated inside XSEDES — each one an application of the same engineering pipeline to a different industry.",
 } as const
 
 export const final = {
@@ -87,6 +87,14 @@ export const footer = {
   copyright: "© XSEDES Private Limited",
   tagline: "Engineering Extraordinary Event Experiences",
   eyebrow: "§ Site",
+  /** Compact wayfinding on mission home (especially mobile). */
+  links: [
+    { label: "Work", href: "/work" },
+    { label: "Brands", href: "/brands" },
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
+    { label: "Divisions", href: "/divisions/x-consult" },
+  ] as const,
 } as const
 
 export const bootGate = {

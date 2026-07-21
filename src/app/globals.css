@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../lib/xsmiths/touch-target.ts";
 
 :root {
   --ink: #000000;
@@ -26,6 +27,16 @@ body {
 
 body.gated {
   overflow: hidden;
+}
+
+/* Skip link target — allow programmatic focus without outline flash until focus. */
+#main-content:focus {
+  outline: none;
+}
+
+#main-content:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 
 @keyframes btnPulse {
@@ -57,4 +68,13 @@ body.gated {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Revisit: inline boot script sets data-boot-seen before paint so SSR
+   Reveal shells (opacity:0) cannot leave the page blank. */
+html[data-boot-seen="1"] [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  clip-path: none !important;
 }

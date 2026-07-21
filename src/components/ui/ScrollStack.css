@@ -1,0 +1,84 @@
+/* ScrollStack — soft card deck for §01–§05 */
+
+.scroll-stack-scroller {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: visible;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Page integration: document scroll (site Lenis owns inertia) */
+.scroll-stack-scroller--window {
+  height: auto;
+  overflow: visible;
+  overscroll-behavior: auto;
+}
+
+.scroll-stack-inner {
+  padding: 10vh 0 40vh;
+  min-height: 100vh;
+}
+
+.scroll-stack-scroller--window .scroll-stack-inner {
+  /* Extra runway so the last stage can settle before Ventures. */
+  padding: 4vh 0 36vh;
+  min-height: 0;
+}
+
+.scroll-stack-card {
+  transform-origin: top center;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  height: auto;
+  min-height: min(92vh, 920px);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  box-sizing: border-box;
+  position: relative;
+  background: #000000;
+  border: 1px solid rgba(237, 242, 240, 0.12);
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+  /* Isolation keeps stacked layers from fighting paint order. */
+  isolation: isolate;
+  contain: layout paint;
+}
+
+.scroll-stack-card .scroll-stack-section {
+  border-bottom: none;
+  min-height: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.scroll-stack-end {
+  width: 100%;
+  height: 1px;
+  pointer-events: none;
+}
+
+@media (max-width: 980px) {
+  .scroll-stack-card {
+    min-height: min(88vh, 780px);
+  }
+
+  .scroll-stack-scroller--window .scroll-stack-inner {
+    padding: 2vh 0 28vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-stack-card {
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    min-height: 0;
+    contain: none;
+  }
+}

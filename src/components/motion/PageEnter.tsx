@@ -1,32 +1,16 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { motion } from "motion/react"
-import { useMissionProgress } from "@/components/providers/MissionProvider"
-import { brandTweenFast } from "@/lib/motion"
 
 type PageEnterProps = {
   children: ReactNode
 }
 
 /**
- * Short mechanical page enter for multipage / chromeless route changes.
- * Instant under reduced motion.
+ * Route-segment enter wrapper. Intentionally a no-op passthrough:
+ * Mission Reveal + BootGate own enter choreography. A Motion/CSS opacity
+ * shell here previously left the whole page stuck at opacity 0.
  */
-const PageEnter = ({ children }: PageEnterProps) => {
-  const { reducedMotion } = useMissionProgress()
-
-  if (reducedMotion) return <>{children}</>
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={brandTweenFast}
-    >
-      {children}
-    </motion.div>
-  )
-}
+const PageEnter = ({ children }: PageEnterProps) => <>{children}</>
 
 export default PageEnter

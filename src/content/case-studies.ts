@@ -1,8 +1,5 @@
-// Case study data — ported verbatim from website/src/content/case-studies/*.md
-// (Astro content collection). This app has no MDX/content-collections setup,
-// so the four entries are inlined here as typed data instead. PLACEHOLDER
-// strings are copied as-is from the source frontmatter/body — real project
-// narratives, photography and measured outcomes are still pending.
+// Case study index data — titles/industries for filtering; full narratives
+// marked as in preparation until client-cleared copy ships.
 
 import type { DivisionId } from "@/content/divisions"
 
@@ -22,20 +19,34 @@ export type CaseStudy = {
   body: string
 }
 
+const prep = {
+  problem:
+    "Client brief and constraints are being packaged for publication. Contact XSEDES for the full project narrative.",
+  approach:
+    "Engineering approach follows the XSEDES operating model — consult, lab, build and ops as required by the brief.",
+  build:
+    "Fabrication and systems detail will be published with approved photography and drawings.",
+  outcome:
+    "Measured outcomes will be shared once cleared for public reference — no invented statistics.",
+  coverAlt: "Case study cover imagery in preparation",
+  body: "Full project narrative in preparation. Use Contact to request a private walkthrough of relevant work.",
+} as const
+
 export const caseStudies: readonly CaseStudy[] = [
   {
     slug: "arena-activation",
     title: "Arena Brand Activation",
     division: "x-ops",
     industry: "Sports & Live Events",
-    summary: "PLACEHOLDER — one-line summary pending real copy.",
-    problem: "PLACEHOLDER — the problem statement as briefed by the client.",
-    approach: "PLACEHOLDER — the engineering approach XSEDES took.",
-    build: "PLACEHOLDER — what was physically fabricated and installed.",
-    outcome: "PLACEHOLDER — measured or observed outcome, no invented stats.",
-    coverAlt: "PLACEHOLDER — CAD/photography alt text for the cover image.",
+    summary:
+      "Technical operations and live deployment support for a large-format brand activation.",
+    problem: prep.problem,
+    approach: prep.approach,
+    build: prep.build,
+    outcome: prep.outcome,
+    coverAlt: prep.coverAlt,
     publishedAt: "2026-01-08",
-    body: "Placeholder case study body copy — replace with real project narrative before content lock.",
+    body: prep.body,
   },
   {
     slug: "atlantis-exhibit",
@@ -43,42 +54,44 @@ export const caseStudies: readonly CaseStudy[] = [
     division: "x-build",
     industry: "Museum & Exhibition",
     summary:
-      "PLACEHOLDER — one-line summary of the Atlantis build pending real copy.",
-    problem: "PLACEHOLDER — the problem statement as briefed by the client.",
-    approach: "PLACEHOLDER — the engineering approach XSEDES took.",
-    build: "PLACEHOLDER — what was physically fabricated and installed.",
-    outcome: "PLACEHOLDER — measured or observed outcome, no invented stats.",
-    coverAlt: "PLACEHOLDER — CAD/photography alt text for the cover image.",
+      "Custom engineered exhibit system for an immersive museum environment.",
+    problem: prep.problem,
+    approach: prep.approach,
+    build: prep.build,
+    outcome: prep.outcome,
+    coverAlt: prep.coverAlt,
     publishedAt: "2026-01-01",
-    body: "Placeholder case study body copy — replace with real project narrative before content lock.",
+    body: prep.body,
   },
   {
     slug: "prototype-lab-rig",
     title: "Interactive Robotics Prototype Rig",
     division: "x-lab",
     industry: "Brand Activation",
-    summary: "PLACEHOLDER — one-line summary pending real copy.",
-    problem: "PLACEHOLDER — the problem statement as briefed by the client.",
-    approach: "PLACEHOLDER — the engineering approach XSEDES took.",
-    build: "PLACEHOLDER — what was physically fabricated and installed.",
-    outcome: "PLACEHOLDER — measured or observed outcome, no invented stats.",
-    coverAlt: "PLACEHOLDER — CAD/photography alt text for the cover image.",
+    summary:
+      "Rapid prototype of an interactive robotics rig for brand experience testing.",
+    problem: prep.problem,
+    approach: prep.approach,
+    build: prep.build,
+    outcome: prep.outcome,
+    coverAlt: prep.coverAlt,
     publishedAt: "2026-01-15",
-    body: "Placeholder case study body copy — replace with real project narrative before content lock.",
+    body: prep.body,
   },
   {
     slug: "venue-systems-consult",
     title: "Venue Systems Feasibility Study",
     division: "x-consult",
     industry: "Museum & Exhibition",
-    summary: "PLACEHOLDER — one-line summary pending real copy.",
-    problem: "PLACEHOLDER — the problem statement as briefed by the client.",
-    approach: "PLACEHOLDER — the engineering approach XSEDES took.",
-    build: "PLACEHOLDER — what was physically fabricated and installed.",
-    outcome: "PLACEHOLDER — measured or observed outcome, no invented stats.",
-    coverAlt: "PLACEHOLDER — CAD/photography alt text for the cover image.",
+    summary:
+      "Feasibility and systems architecture study for a venue technology programme.",
+    problem: prep.problem,
+    approach: prep.approach,
+    build: prep.build,
+    outcome: prep.outcome,
+    coverAlt: prep.coverAlt,
     publishedAt: "2026-01-22",
-    body: "Placeholder case study body copy — replace with real project narrative before content lock.",
+    body: prep.body,
   },
 ] as const
 
@@ -89,7 +102,7 @@ export const workPageStrings = {
   industryFilterLabel: "Industry",
   all: "All",
   noResults: "No case studies match these filters.",
-  coverPlaceholder: "PLACEHOLDER — cover CAD still / fabrication photography",
+  coverPlaceholder: "Cover imagery in preparation",
   backToWork: "← All work",
   cta: "Start a project →",
 } as const

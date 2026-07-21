@@ -16,13 +16,14 @@ import {
 
 type StageSectionProps = {
   division: Division
+  className?: string
 }
 
 /**
  * Single operating-model stage — data-driven from divisions.ts.
  * Registers as a mission stage (rail) and as clearable (eyebrow tick).
  */
-const StageSection = ({ division }: StageSectionProps) => {
+const StageSection = ({ division, className = "" }: StageSectionProps) => {
   const registerStage = useRegisterStage(division.stageKey)
   const { clearedStages, clearedSections, registerClearable } =
     useMissionProgress()
@@ -47,7 +48,7 @@ const StageSection = ({ division }: StageSectionProps) => {
     <section
       ref={sectionRef}
       id={division.sectionId}
-      className="relative border-b border-[var(--hairline)] px-[clamp(28px,7vw,110px)] py-[120px]"
+      className={`relative border-b border-[var(--hairline)] px-[clamp(28px,7vw,110px)] py-[120px] ${className}`.trim()}
     >
       <SectionBackdrop mark={`0${division.stageIndex}`} />
       <CornerMarks />

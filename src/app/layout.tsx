@@ -1,8 +1,11 @@
 import type { Metadata } from "next"
+import Script from "next/script"
 import { Barlow } from "next/font/google"
 import ConciergeWidget from "@/components/agent/ConciergeWidget"
 import SiteChrome from "@/components/layout/SiteChrome"
+import RootSkipLink from "@/components/ui/RootSkipLink"
 import MissionShell from "@/components/providers/MissionShell"
+import { bootGate } from "@/content/site"
 import "./globals.css"
 
 const barlow = Barlow({
@@ -28,6 +31,14 @@ export default function RootLayout({
       <body
         className={`${barlow.className} bg-[var(--ink)] text-[var(--text)] antialiased`}
       >
+        <Script
+          id="xsedes-boot-seen"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem(${JSON.stringify(bootGate.sessionKey)})==="1")document.documentElement.dataset.bootSeen="1"}catch(e){}`,
+          }}
+        />
+        <RootSkipLink />
         <MissionShell>
           <SiteChrome>{children}</SiteChrome>
           <ConciergeWidget />

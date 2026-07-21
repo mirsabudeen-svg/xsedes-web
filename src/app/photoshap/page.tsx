@@ -5,7 +5,8 @@ import { getVenturePage } from "@/content/venture-pages"
 
 export const metadata: Metadata = {
   title: "PhotoShap — XSEDES",
-  description: "PhotoShap — a venture incubated inside XSEDES.",
+  description:
+    "PhotoShap — AI-powered photo booths and interactive guest engagement, incubated inside XSEDES.",
 }
 
 export default function PhotoShapPage() {

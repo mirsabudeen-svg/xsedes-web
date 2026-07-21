@@ -2,8 +2,9 @@
 
 import type { ReactNode } from "react"
 import { usePathname } from "next/navigation"
+import SiteCardNav from "@/components/layout/SiteCardNav"
 import SiteFooter from "@/components/layout/SiteFooter"
-import SiteHeader from "@/components/layout/SiteHeader"
+import SiteLogo from "@/components/layout/SiteLogo"
 import { isChromelessPath, isMissionHomePath } from "@/lib/chromeless"
 
 type SiteChromeProps = {
@@ -11,20 +12,30 @@ type SiteChromeProps = {
 }
 
 /**
- * Multi-page routes get SiteHeader + SiteFooter.
- * Mission home (`/`) is headerless — MissionRail + sections/Footer own chrome.
+ * Non-chromeless routes get hamburger CardNav popup (no sticky header).
+ * Multipage routes also get SiteFooter.
  * Venture landings stay fully chromeless.
  */
 const SiteChrome = ({ children }: SiteChromeProps) => {
   const pathname = usePathname()
 
-  if (isChromelessPath(pathname) || isMissionHomePath(pathname)) {
+  if (isChromelessPath(pathname)) {
     return <>{children}</>
+  }
+
+  if (isMissionHomePath(pathname)) {
+    return (
+      <>
+        <SiteCardNav className="card-nav--mission" />
+        {children}
+      </>
+    )
   }
 
   return (
     <>
-      <SiteHeader />
+      <SiteLogo />
+      <SiteCardNav />
       {children}
       <SiteFooter />
     </>

@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useCallback } from "react"
 import Link from "next/link"
@@ -18,7 +18,7 @@ type DivisionPageContentProps = {
 }
 
 /**
- * /divisions/[slug] detail page — ported from
+ * /divisions/[slug] detail page â€” ported from
  * website/src/pages/divisions/[slug].astro. Four sections: hero,
  * capabilities, proof (case studies for this division), process.
  */
@@ -53,7 +53,7 @@ const DivisionPageContent = ({
   )
 
   return (
-    <main>
+    <main id="main-content" tabIndex={-1}>
       <section
         ref={heroRef}
         id={heroId}

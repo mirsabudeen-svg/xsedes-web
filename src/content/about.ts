@@ -1,11 +1,10 @@
-// About page copy — ported verbatim from website/src/pages/about.astro.
-// Source is scaffold-stage: PLACEHOLDER strings are copied as-is, not
-// invented. Replace before content lock.
+// About page copy — aligned with approved site positioning (no invented claims).
 
 export const aboutHero = {
   eyebrow: "§ 07 · ABOUT",
   title: "About XSEDES",
-  lede: "PLACEHOLDER — company overview. XSEDES is an experiential technology partner for events, exhibitions, entertainment and live experiences, engineering physical/digital installations for agencies and venues.",
+  lede:
+    "XSEDES is an experiential technology partner for the events, exhibitions, entertainment and live-experiences industry. We design, engineer, supply and operate innovative technologies that help event professionals deliver extraordinary experiences — alongside agencies, never competing with them.",
 } as const
 
 export const aboutDoctrine = {
@@ -13,23 +12,23 @@ export const aboutDoctrine = {
   title: "Engineered, not decorated.",
   points: [
     {
-      title: "PLACEHOLDER principle one",
-      body: "PLACEHOLDER — expand on the first doctrine point. This section carries real page weight, not a footnote.",
+      title: "Partner, never competitor",
+      body: "We work with event agencies, production companies, exhibition contractors, venues and corporate event teams. Your event. Our technology.",
     },
     {
-      title: "PLACEHOLDER principle two",
-      body: "PLACEHOLDER — expand on the second doctrine point.",
+      title: "Full pipeline ownership",
+      body: "Discover → X-Consult → X-Lab → X-Build → X-Ops. Strategy, innovation, fabrication and operations stay under one engineering roof.",
     },
     {
-      title: "PLACEHOLDER principle three",
-      body: "PLACEHOLDER — expand on the third doctrine point.",
+      title: "Reliability at scale",
+      body: "Innovation matters only when systems perform live. We design for deployment, monitoring, training and sustained support.",
     },
   ],
 } as const
 
 export const aboutTeam = {
   eyebrow: "§ TEAM",
-  body: "PLACEHOLDER — team/process snapshot pending real bios and org content.",
+  body: "Based in Kerala, India. A multidisciplinary team spanning consulting, industrial design, mechanical and electronics engineering, software, fabrication and technical operations — built to move a brief from idea to live system.",
 } as const
 
 export const aboutCta = {

@@ -2,8 +2,20 @@
 // (xsedes-home.html). Ventures are incubated inside XSEDES.
 
 export type Venture = {
-  id: "photoshap" | "velos" | "konstrukt" | "bobbs-kitchen" | "deed"
-  name: "PhotoShap" | "VELOS" | "KONSTRUKT" | "Bobb's Kitchen" | "DEED"
+  id:
+    | "photoshap"
+    | "velos"
+    | "konstrukt"
+    | "bobbs-kitchen"
+    | "deed"
+    | "xsmiths"
+  name:
+    | "PhotoShap"
+    | "VELOS"
+    | "KONSTRUKT"
+    | "Bobb's Kitchen"
+    | "DEED"
+    | "XSMITHS"
   industry: string
   oneLiner: string
 }
@@ -43,5 +55,12 @@ export const ventures: readonly Venture[] = [
     industry: "LegalTech / AI",
     oneLiner:
       "AI-powered intellectual property intelligence platform and advisory services.",
+  },
+  {
+    id: "xsmiths",
+    name: "XSMITHS",
+    industry: "Interactive Experience Engineering",
+    oneLiner:
+      "Interactive and immersive experience engineering — AI-driven, robotic, and spatially responsive systems for physical spaces.",
   },
 ] as const

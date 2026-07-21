@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -69,10 +70,11 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
     () => new Set(),
   )
   const [complete, setComplete] = useState(false)
-  // Always false on first paint (SSR + hydrate). Session restore runs in an effect
-  // so client markup matches the server and BootGate can still skip via its own read.
+  // Always false on first paint (SSR + hydrate). Session restore runs in layout
+  // so revisits arm reveals before the browser paints a blank frame.
   const [gateDismissed, setGateDismissed] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(false)
+  const gateArmedRef = useRef(false)
 
   const completeRef = useRef(false)
   const stageEls = useRef(new Map<StageKey, HTMLElement>())
@@ -81,19 +83,26 @@ export const MissionProvider = ({ children }: MissionProviderProps) => {
 
   const dismissGate = useCallback(() => {
     writeBootSeen()
+    gateArmedRef.current = true
     setGateDismissed(true)
   }, [])
 
   const armReveals = useCallback(() => {
+    gateArmedRef.current = true
     setGateDismissed(true)
   }, [])
 
   const prepareBootGate = useCallback(() => {
-    if (!readBootSeen()) setGateDismissed(false)
+    if (readBootSeen()) return
+    gateArmedRef.current = false
+    setGateDismissed(false)
   }, [])
 
-  useEffect(() => {
-    if (readBootSeen()) setGateDismissed(true)
+  // Restore session boot before paint so Reveals/Lenis arm on revisit.
+  useLayoutEffect(() => {
+    if (!readBootSeen()) return
+    gateArmedRef.current = true
+    setGateDismissed(true)
   }, [])
 
   useEffect(() => {

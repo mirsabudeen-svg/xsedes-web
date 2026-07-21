@@ -6,7 +6,7 @@ import Reveal from "@/components/ui/Reveal"
 import SectionEnter from "@/components/motion/SectionEnter"
 import SectionBackdrop from "@/components/ui/SectionBackdrop"
 import SectionLabel from "@/components/ui/SectionLabel"
-import VentureCard from "@/components/ui/VentureCard"
+import MagicBento from "@/components/ui/MagicBento"
 import { useMissionProgress } from "@/components/providers/MissionProvider"
 import { venturesSection } from "@/content/site"
 import { ventures } from "@/content/ventures"
@@ -14,7 +14,8 @@ import { ventures } from "@/content/ventures"
 const VENTURES_ID = "s-ventures"
 
 const Ventures = () => {
-  const { clearedSections, registerClearable } = useMissionProgress()
+  const { clearedSections, registerClearable, reducedMotion } =
+    useMissionProgress()
   const cleared = clearedSections.has(VENTURES_ID)
 
   const sectionRef = useCallback(
@@ -23,6 +24,15 @@ const Ventures = () => {
     },
     [registerClearable],
   )
+
+  const bentoItems = ventures.map((venture) => ({
+    id: venture.id,
+    title: venture.name,
+    description: venture.oneLiner,
+    label: venture.industry,
+    href: `/${venture.id}`,
+    color: "#000000",
+  }))
 
   return (
     <section
@@ -53,18 +63,21 @@ const Ventures = () => {
       </Reveal>
 
       <Reveal delay={3}>
-        <div className="mt-14 grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-px border border-[var(--hairline)] bg-[var(--hairline)]">
-          {ventures.map((venture) => (
-            <VentureCard
-              key={venture.id}
-              href={`/${venture.id}`}
-              id={venture.id}
-              name={venture.name}
-              eyebrow={venture.industry}
-              description={venture.oneLiner}
-              headingLevel="h3"
-            />
-          ))}
+        <div className="mt-14">
+          <MagicBento
+            items={bentoItems}
+            textAutoHide={false}
+            enableStars
+            enableSpotlight
+            enableBorderGlow
+            enableTilt={false}
+            enableMagnetism
+            clickEffect
+            spotlightRadius={280}
+            particleCount={10}
+            glowColor="78, 242, 211"
+            disableAnimations={reducedMotion}
+          />
         </div>
       </Reveal>
     </section>

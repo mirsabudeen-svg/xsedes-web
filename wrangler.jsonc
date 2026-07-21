@@ -4,11 +4,17 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-06-05",
   "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": true,
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
   "observability": {
     "enabled": true
-  }
+  },
+  "routes": [
+    { "pattern": "www.xsedes.com/*", "zone_name": "xsedes.com" },
+    { "pattern": "xsedes.com/*", "zone_name": "xsedes.com" }
+  ]
 }

@@ -1,13 +1,14 @@
-// Careers page copy — ported verbatim from website/src/pages/careers.astro.
-// Source is scaffold-stage: PLACEHOLDER strings are copied as-is.
+// Careers page copy — demo-safe until open roles are published.
 
 export const careersHero = {
   eyebrow: "§ 08 · CAREERS",
   title: "Careers",
-  lede: "PLACEHOLDER — careers intro pending real copy and open roles feed.",
+  lede:
+    "We hire engineers, designers and operators who want to build technology that performs live. Open roles are listed here when available — or reach out via Contact with a short note and portfolio.",
 } as const
 
 export const careersRoles = {
   eyebrow: "§ OPEN ROLES",
-  empty: "PLACEHOLDER — no open roles wired yet. Replace with real listings before launch.",
+  empty:
+    "No open roles listed right now. Send an introduction through Contact and we will keep your details on file.",
 } as const

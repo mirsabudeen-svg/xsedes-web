@@ -10,7 +10,11 @@ import { positioning } from "@/content/site"
 
 const POSITIONING_ID = "s-positioning"
 
-const Positioning = () => {
+type PositioningProps = {
+  className?: string
+}
+
+const Positioning = ({ className = "" }: PositioningProps) => {
   const { clearedSections, registerClearable } = useMissionProgress()
   const cleared = clearedSections.has(POSITIONING_ID)
 
@@ -25,7 +29,7 @@ const Positioning = () => {
     <section
       ref={sectionRef}
       id={POSITIONING_ID}
-      className="relative border-b border-[var(--hairline)] px-[clamp(28px,7vw,110px)] py-[120px]"
+      className={`relative border-b border-[var(--hairline)] px-[clamp(28px,7vw,110px)] py-[120px] ${className}`.trim()}
     >
       <SectionBackdrop mark="01" />
       <CornerMarks />

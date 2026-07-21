@@ -1,0 +1,138 @@
+/*
+ * XSMITHS design tokens — canonical source: docs/xsmiths/XSMITHS-Design-System-v1.0.md
+ * Parts 2 (tokens) and 3 (colour). Scoped to the XSMITHS venture shell so the
+ * parent XSEDES surface never inherits venture-specific values.
+ *
+ * Rule (Frontend Architecture §4): components consume tokens; they never
+ * restate these literals.
+ */
+
+[data-brand="xsmiths"] {
+  /* ── 2.1 Spacing (base 4px) ─────────────────────────────────────────── */
+  --xs-space-1: 4px;
+  --xs-space-2: 8px;
+  --xs-space-3: 12px;
+  --xs-space-4: 16px;
+  --xs-space-5: 20px;
+  --xs-space-6: 24px;
+  --xs-space-8: 32px;
+  --xs-space-10: 40px;
+  --xs-space-12: 48px;
+  --xs-space-14: 56px;
+  --xs-space-16: 64px;
+  --xs-space-20: 80px;
+  --xs-space-24: 96px;
+  --xs-space-30: 120px; /* standard section vertical padding */
+  --xs-space-40: 160px; /* major section break */
+  --xs-space-50: 200px; /* hero breathing */
+  --xs-space-60: 240px; /* installation-scale pause */
+
+  /* ── 2.2 Sizing ─────────────────────────────────────────────────────── */
+  --xs-size-touch-min: 44px;
+  --xs-size-reticle: 48px;
+  --xs-size-nav-height: 72px;
+  --xs-size-hero-min: 92vh;
+
+  /* ── 2.11 Containers ────────────────────────────────────────────────── */
+  --xs-container-pad: clamp(28px, 5vw, 110px);
+  --xs-container-narrow: 560px;
+  --xs-container-reading: 620px;
+  --xs-container-standard: 900px;
+  --xs-container-wide: 1100px;
+  --xs-container-full: 1440px;
+
+  /* ── 3.1 Accent — the only chromatic signal ─────────────────────────── */
+  --xs-accent: #4ef2d3;
+  --xs-accent-muted: rgba(78, 242, 211, 0.3);
+  --xs-accent-subtle: rgba(78, 242, 211, 0.12);
+
+  /* ── 3.2 Neutral text ───────────────────────────────────────────────── */
+  --xs-text-primary: #edf2f0;
+  --xs-text-secondary: rgba(237, 242, 240, 0.55);
+  --xs-text-tertiary: rgba(237, 242, 240, 0.32);
+  --xs-text-inverse: #000000;
+
+  /* ── 3.3 Surface (raised/sunken expressed as white-over-black overlays
+        so composited values equal #141414 / #0A0A0A on the pure canvas) ── */
+  --xs-surface-canvas: #000000;
+  --xs-surface-raised: rgba(255, 255, 255, 0.08);
+  --xs-surface-sunken: rgba(255, 255, 255, 0.04);
+  --xs-surface-glass: rgba(255, 255, 255, 0.028);
+  --xs-surface-hover: rgba(255, 255, 255, 0.03);
+
+  /* ── 3.4 Borders / hairlines ────────────────────────────────────────── */
+  --xs-border-default: rgba(255, 255, 255, 0.09);
+  --xs-border-strong: rgba(255, 255, 255, 0.16);
+  --xs-border-accent: rgba(78, 242, 211, 0.3);
+
+  /* ── 3.7 Overlay ────────────────────────────────────────────────────── */
+  --xs-overlay-scrim: rgba(0, 0, 0, 0.85);
+  --xs-overlay-nav: rgba(0, 0, 0, 0.9);
+
+  /* ── 2.5 Opacity ────────────────────────────────────────────────────── */
+  --xs-opacity-disabled: 0.38;
+  --xs-opacity-nav: 0.85;
+
+  /* ── 2.6 Blur ───────────────────────────────────────────────────────── */
+  --xs-blur-nav: 6px;
+  --xs-blur-reveal: 6px;
+
+  /* ── 2.8 / 2.9 Motion ───────────────────────────────────────────────── */
+  --xs-duration-fast: 200ms;
+  --xs-duration-ui: 250ms;
+  --xs-duration-mechanical: 550ms;
+  --xs-duration-standard: 900ms;
+  --xs-duration-slow: 1200ms;
+  --xs-ease-mechanical: cubic-bezier(0.22, 0.61, 0.2, 1);
+
+  /* ── 2.10 Typography scale ──────────────────────────────────────────── */
+  --xs-type-display-xl: clamp(56px, 10vw, 128px);
+  --xs-type-display-lg: clamp(40px, 6vw, 86px);
+  --xs-type-heading-xl: clamp(36px, 5vw, 64px);
+  --xs-type-heading-lg: clamp(30px, 4.2vw, 56px);
+  --xs-type-heading-md: clamp(24px, 3vw, 36px);
+  --xs-type-title: 22px;
+  --xs-type-body-lg: 18px;
+  --xs-type-body: 17px;
+  --xs-type-body-sm: 15px;
+  --xs-type-caption: 13px;
+  --xs-type-label: 12px;
+  --xs-type-micro: 11px;
+
+  /* ── 2.7 Elevation ──────────────────────────────────────────────────── */
+  --xs-z-base: 0;
+  --xs-z-raised: 10;
+  --xs-z-nav: 20;
+  --xs-z-overlay: 40;
+  --xs-z-toast: 50;
+  --xs-z-skip: 100;
+
+  /* Bridge venture tokens to shared component variables (Frontend Architecture §4). */
+  --accent: var(--xs-accent);
+  --text: var(--xs-text-primary);
+  --dim: var(--xs-text-secondary);
+  --faint: var(--xs-text-tertiary);
+  --ink: var(--xs-surface-canvas);
+  --hairline: var(--xs-border-default);
+  --hairline-strong: var(--xs-border-strong);
+  --glass: var(--xs-surface-glass);
+  --xs-font-primary: var(--font-barlow, "Barlow", sans-serif);
+  --xs-font-accent: var(--font-xsmiths-accent, "Instrument Serif", serif);
+  font-family: var(--xs-font-primary);
+}
+
+/*
+ * Reduced motion (Design System §9.6): durations collapse; blur removed.
+ * The global wildcard rule in globals.css already zeroes transitions;
+ * these ensure token consumers degrade to opacity-only.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [data-brand="xsmiths"] {
+    --xs-duration-fast: 0ms;
+    --xs-duration-ui: 0ms;
+    --xs-duration-mechanical: 0ms;
+    --xs-duration-standard: 0ms;
+    --xs-duration-slow: 0ms;
+    --xs-blur-reveal: 0px;
+  }
+}

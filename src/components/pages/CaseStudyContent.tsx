@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useCallback } from "react"
 import Link from "next/link"
@@ -24,7 +24,7 @@ const CaseStudyContent = ({ entry, divisionLabel }: CaseStudyContentProps) => {
   )
 
   return (
-    <main>
+    <main id="main-content" tabIndex={-1}>
       <article>
         <section
           ref={sectionRef}
@@ -34,7 +34,7 @@ const CaseStudyContent = ({ entry, divisionLabel }: CaseStudyContentProps) => {
           <CornerMarks />
           <Reveal>
             <SectionLabel cleared={clearedSections.has(sectionId)}>
-              {`§ ${divisionLabel.toUpperCase()} · ${entry.industry}`}
+              {`Â§ ${divisionLabel.toUpperCase()} Â· ${entry.industry}`}
             </SectionLabel>
           </Reveal>
           <Reveal delay={1}>
@@ -62,25 +62,25 @@ const CaseStudyContent = ({ entry, divisionLabel }: CaseStudyContentProps) => {
             <div className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2">
               <div>
                 <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--faint)]">
-                  § PROBLEM
+                  Â§ PROBLEM
                 </p>
                 <p className="text-[14px] text-[var(--dim)]">{entry.problem}</p>
               </div>
               <div>
                 <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--faint)]">
-                  § APPROACH
+                  Â§ APPROACH
                 </p>
                 <p className="text-[14px] text-[var(--dim)]">{entry.approach}</p>
               </div>
               <div>
                 <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--faint)]">
-                  § BUILD
+                  Â§ BUILD
                 </p>
                 <p className="text-[14px] text-[var(--dim)]">{entry.build}</p>
               </div>
               <div>
                 <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--faint)]">
-                  § OUTCOME
+                  Â§ OUTCOME
                 </p>
                 <p className="text-[14px] text-[var(--dim)]">{entry.outcome}</p>
               </div>

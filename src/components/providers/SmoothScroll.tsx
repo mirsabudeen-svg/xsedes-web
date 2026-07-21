@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useRef,
+  useState,
   type ReactNode,
 } from "react"
 import Lenis from "lenis"
@@ -18,26 +19,33 @@ type SmoothScrollContextValue = {
     target: string | HTMLElement,
     options?: { immediate?: boolean },
   ) => void
+  /** Live Lenis instance when smooth scroll is armed (null otherwise). */
+  lenis: Lenis | null
 }
 
-const SmoothScrollContext = createContext<SmoothScrollContextValue | null>(null)
+const SmoothScrollContext = createContext<SmoothScrollContextValue | null>(
+  null,
+)
 
 type SmoothScrollProps = {
   children: ReactNode
+  /** Keep the provider mounted but never instantiate Lenis (native scroll). */
+  disabled?: boolean
 }
 
 /**
- * Lenis is instantiated only when prefers-reduced-motion is off AND the
- * boot gate has been dismissed. Destroyed on unmount or when either
- * condition flips off.
+ * Site-wide Lenis — mechanical brand ease, soft inertia.
+ * Instantiated only when prefers-reduced-motion is off AND the boot gate
+ * has been dismissed.
  */
-export const SmoothScroll = ({ children }: SmoothScrollProps) => {
+export const SmoothScroll = ({ children, disabled = false }: SmoothScrollProps) => {
   const { gateDismissed, reducedMotion } = useMissionProgress()
   const lenisRef = useRef<Lenis | null>(null)
   const rafRef = useRef<number | null>(null)
+  const [lenis, setLenis] = useState<Lenis | null>(null)
 
   useEffect(() => {
-    const shouldRun = gateDismissed && !reducedMotion
+    const shouldRun = gateDismissed && !reducedMotion && !disabled
     if (!shouldRun) {
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current)
@@ -47,14 +55,28 @@ export const SmoothScroll = ({ children }: SmoothScrollProps) => {
         lenisRef.current.destroy()
         lenisRef.current = null
       }
+      setLenis(null)
       return
     }
 
-    const lenis = new Lenis({ lerp: 0.1 })
-    lenisRef.current = lenis
+    const instance = new Lenis({
+      // Lower lerp = longer glide; brand-mechanical, not springy.
+      lerp: 0.068,
+      smoothWheel: true,
+      // Slightly damp wheel so stack cards don't jump a full stage per tick.
+      wheelMultiplier: 0.78,
+      touchMultiplier: 1.35,
+      syncTouch: true,
+      syncTouchLerp: 0.06,
+      gestureOrientation: "vertical",
+      easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+      duration: 1.15,
+    })
+    lenisRef.current = instance
+    setLenis(instance)
 
     const raf = (time: number) => {
-      lenis.raf(time)
+      instance.raf(time)
       rafRef.current = requestAnimationFrame(raf)
     }
     rafRef.current = requestAnimationFrame(raf)
@@ -64,10 +86,11 @@ export const SmoothScroll = ({ children }: SmoothScrollProps) => {
         cancelAnimationFrame(rafRef.current)
         rafRef.current = null
       }
-      lenis.destroy()
-      if (lenisRef.current === lenis) lenisRef.current = null
+      instance.destroy()
+      if (lenisRef.current === instance) lenisRef.current = null
+      setLenis(null)
     }
-  }, [gateDismissed, reducedMotion])
+  }, [gateDismissed, reducedMotion, disabled])
 
   const scrollTo = useCallback(
     (target: string | HTMLElement, options?: { immediate?: boolean }) => {
@@ -77,9 +100,12 @@ export const SmoothScroll = ({ children }: SmoothScrollProps) => {
 
       if (!(el instanceof HTMLElement)) return
 
-      const lenis = lenisRef.current
-      if (lenis && gateDismissed && !reducedMotion) {
-        lenis.scrollTo(el, { immediate })
+      const active = lenisRef.current
+      if (active && gateDismissed && !reducedMotion) {
+        active.scrollTo(el, {
+          immediate,
+          offset: -8,
+        })
         return
       }
 
@@ -89,7 +115,7 @@ export const SmoothScroll = ({ children }: SmoothScrollProps) => {
   )
 
   return (
-    <SmoothScrollContext.Provider value={{ scrollTo }}>
+    <SmoothScrollContext.Provider value={{ scrollTo, lenis }}>
       {children}
     </SmoothScrollContext.Provider>
   )

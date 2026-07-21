@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useCallback, useMemo, useState } from "react"
 import Link from "next/link"
@@ -19,7 +19,7 @@ type WorkIndexContentProps = {
 }
 
 /**
- * /work index — ported from website/src/pages/work/index.astro. The Astro
+ * /work index â€” ported from website/src/pages/work/index.astro. The Astro
  * source filtered case-study cards client-side with vanilla JS; here the
  * same behaviour is React state instead of DOM manipulation.
  */
@@ -44,7 +44,7 @@ const WorkIndexContent = ({ caseStudies, industries }: WorkIndexContentProps) =>
   )
 
   return (
-    <main>
+    <main id="main-content" tabIndex={-1}>
       <section
         ref={sectionRef}
         id={SECTION_ID}
@@ -74,6 +74,7 @@ const WorkIndexContent = ({ caseStudies, industries }: WorkIndexContentProps) =>
               <button
                 type="button"
                 onClick={() => setDivision(ALL)}
+                aria-pressed={division === ALL}
                 className={`border px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors duration-300 ease-[var(--ease)] ${
                   division === ALL
                     ? "border-[var(--accent)] text-[var(--accent)]"
@@ -87,6 +88,7 @@ const WorkIndexContent = ({ caseStudies, industries }: WorkIndexContentProps) =>
                   key={d.id}
                   type="button"
                   onClick={() => setDivision(d.id)}
+                  aria-pressed={division === d.id}
                   className={`border px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors duration-300 ease-[var(--ease)] ${
                     division === d.id
                       ? "border-[var(--accent)] text-[var(--accent)]"
@@ -105,6 +107,7 @@ const WorkIndexContent = ({ caseStudies, industries }: WorkIndexContentProps) =>
               <button
                 type="button"
                 onClick={() => setIndustry(ALL)}
+                aria-pressed={industry === ALL}
                 className={`border px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors duration-300 ease-[var(--ease)] ${
                   industry === ALL
                     ? "border-[var(--accent)] text-[var(--accent)]"
@@ -118,6 +121,7 @@ const WorkIndexContent = ({ caseStudies, industries }: WorkIndexContentProps) =>
                   key={i}
                   type="button"
                   onClick={() => setIndustry(i)}
+                  aria-pressed={industry === i}
                   className={`border px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors duration-300 ease-[var(--ease)] ${
                     industry === i
                       ? "border-[var(--accent)] text-[var(--accent)]"
@@ -153,7 +157,7 @@ const WorkIndexContent = ({ caseStudies, industries }: WorkIndexContentProps) =>
                       className="absolute right-3.5 top-3.5 h-3 w-3 border-r border-t border-[var(--hairline-strong)] transition-[border-color] duration-500 ease-[var(--ease)] group-hover:border-[var(--accent)]"
                     />
                     <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
-                      {divisionLabel} · {c.industry}
+                      {divisionLabel} Â· {c.industry}
                     </p>
                     <h2 className="text-[16px] font-bold uppercase tracking-[0.01em] text-[var(--text)]">
                       {c.title}

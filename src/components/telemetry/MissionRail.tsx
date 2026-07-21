@@ -1,6 +1,7 @@
 "use client"
 
 import type { KeyboardEvent } from "react"
+import Link from "next/link"
 import { useMissionProgress } from "@/components/providers/MissionProvider"
 import { useSmoothScroll } from "@/components/providers/SmoothScroll"
 import { missionStages, type StageKey } from "@/content/divisions"
@@ -74,10 +75,14 @@ const MissionRail = () => {
       aria-label="Scroll progress"
       className="fixed bottom-0 left-0 top-0 z-50 hidden w-[var(--rail-w)] flex-col border-r border-[var(--hairline)] bg-black/55 px-[22px] py-7 backdrop-blur-[8px] min-[981px]:flex"
     >
-      <div className="text-[15px] font-extrabold uppercase tracking-[0.32em] text-[var(--text)]">
+      <Link
+        href="/"
+        aria-label={`${site.name} home`}
+        className="text-[15px] font-extrabold uppercase tracking-[0.32em] text-[var(--text)] no-underline transition-colors duration-300 ease-[var(--ease)] hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
+      >
         {rail.brand}
         <span className="text-[var(--accent)]">.</span>
-      </div>
+      </Link>
       <div className="mt-1.5 text-[9.5px] font-medium uppercase tracking-[0.22em] text-[var(--faint)]">
         {rail.sub}
       </div>

@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useCallback } from "react"
 import CornerMarks from "@/components/ui/CornerMarks"
@@ -19,7 +19,7 @@ const BrandsContent = () => {
   )
 
   return (
-    <main>
+    <main id="main-content" tabIndex={-1}>
       <section
         ref={sectionRef}
         id={SECTION_ID}
