@@ -13,6 +13,10 @@
   "observability": {
     "enabled": true
   },
+  // OpenNext on Workers: skip dynamic require of middleware-manifest.json (no middleware.ts).
+  "vars": {
+    "NEXT_PRIVATE_MINIMAL_MODE": "1"
+  },
   "routes": [
     { "pattern": "www.xsedes.com/*", "zone_name": "xsedes.com" },
     { "pattern": "xsedes.com/*", "zone_name": "xsedes.com" }
