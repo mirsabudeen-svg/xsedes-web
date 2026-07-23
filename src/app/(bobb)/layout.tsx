@@ -27,16 +27,16 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.xsedes.com"),
 };
 
-export default function BobbsKitchenLayout({
+export default function BobbLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className={`${syne.variable} ${dmSans.variable} ${spaceMono.variable}`}
-    >
-      {children}
-    </div>
+    <html lang="en" className={`${syne.variable} ${dmSans.variable} ${spaceMono.variable}`}>
+      <body className="bg-void text-bone antialiased">
+        {children}
+      </body>
+    </html>
   );
 }
