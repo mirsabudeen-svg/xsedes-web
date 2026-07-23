@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+/* ── BOBB design tokens (from BOBB BRANDGUIDELINES FINAL.pdf, §03 Colour System) ── */
+@theme {
+  --color-void: #0a0a0a;
+  --color-charcoal: #1e1e1e;
+  --color-smoke: #3a3835;
+  --color-gold: #c4a545;
+  --color-golddim: #9e8538;
+  --color-bone: #faf7f0;
+  --color-warmgray: #8a8780;
+  --color-alert: #d94f3d;
+  /* XSEDES parent accent — used only on the parent-brand root page, never on /bobb */
+  --color-xsedes: #4ef2d3;
+
+  --font-display: var(--font-syne);
+  --font-body: var(--font-dm-sans);
+  --font-mono: var(--font-space-mono);
+}
+
+body {
+  background: var(--color-void);
+  color: var(--color-bone);
+  font-family: var(--font-body), sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Visible keyboard focus everywhere, hairline style — no glows or shadows */
+:focus-visible {
+  outline: 1px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-void);
+}
+
+/* ── Mono eyebrow label ── */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--color-gold);
+}
+
+/* ── Dotted menu leaders ── */
+.leader {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  overflow: hidden;
+}
+.leader::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px dotted var(--color-smoke);
+  transform: translateY(-3px);
+}
+
+/* ── Service-window ticker ── */
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll 38s linear infinite;
+}
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ── "Now serving" pulse ── */
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  display: inline-block;
+  animation: live-pulse 2s infinite;
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── Scroll reveal: mechanical, precise — blur + opacity + slide-up ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(6px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* ── Kiosk progress bar ── */
+.cook-progress {
+  height: 2px;
+  background: var(--color-smoke);
+  position: relative;
+  overflow: hidden;
+}
+.cook-progress > span {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  background: var(--color-gold);
+  transform: scaleX(0);
+  transition: transform 2.4s linear;
+}
+.cook-progress.is-cooking > span {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation: none; }
+  .live-dot { animation: none; }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+  .cook-progress > span { transition: none; }
+  html { scroll-behavior: auto; }
+}
+
+html {
+  scroll-behavior: smooth;
+}
